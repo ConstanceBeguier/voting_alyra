@@ -1,4 +1,4 @@
-# Voting smart contract
+# Voting
 
 An Ethereum voting contract where an administrator (`Ownable`) registers a whitelist of voters,
 who then submit proposals and vote for one of them.
