@@ -5,9 +5,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 
 contract Voting is Ownable {
-
-
-    uint public winningProposalID;
     
     struct Voter {
         bool isRegistered;
@@ -29,6 +26,8 @@ contract Voting is Ownable {
         VotesTallied
     }
 
+    // uint248 pour que winningProposalID et workflowStatus partagent un slot
+    uint248 public winningProposalID;
     WorkflowStatus public workflowStatus;
     Proposal[] proposalsArray;
     mapping (address => Voter) voters;
@@ -107,7 +106,7 @@ contract Voting is Ownable {
         // GENESIS (index 0) est le vote blanc : à égalité, une vraie
         // proposition passe devant lui
         if (newCount > winningCount || (newCount == winningCount && winningProposalID == 0 && _id != 0)) {
-            winningProposalID = _id;
+            winningProposalID = uint248(_id);
         }
 
         emit Voted(msg.sender, _id);
