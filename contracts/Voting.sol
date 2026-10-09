@@ -12,7 +12,7 @@ contract Voting is Ownable {
     struct Voter {
         bool isRegistered;
         bool hasVoted;
-        uint votedProposalId;
+        uint240 votedProposalId;
     }
 
     struct Proposal {
@@ -91,7 +91,7 @@ contract Voting is Ownable {
         require(voters[msg.sender].hasVoted != true, 'You have already voted');
         require(_id < proposalsArray.length, 'Proposal not found'); // pas obligé, et pas besoin du >0 car uint
 
-        voters[msg.sender].votedProposalId = _id;
+        voters[msg.sender].votedProposalId = uint240(_id);
         voters[msg.sender].hasVoted = true;
         proposalsArray[_id].voteCount++;
 
