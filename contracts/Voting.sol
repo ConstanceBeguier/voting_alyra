@@ -97,7 +97,12 @@ contract Voting is Ownable {
 
         // mise à jour du gagnant après chaque vote : évite une boucle for
         // lors du décompte, et donc un possible DoS
-        if (proposalsArray[_id].voteCount > proposalsArray[winningProposalID].voteCount) {
+        uint winningCount = proposalsArray[winningProposalID].voteCount;
+        uint newCount = proposalsArray[_id].voteCount;
+
+        // GENESIS (index 0) est le vote blanc : à égalité, une vraie
+        // proposition passe devant lui
+        if (newCount > winningCount || (newCount == winningCount && winningProposalID == 0 && _id != 0)) {
             winningProposalID = _id;
         }
 
