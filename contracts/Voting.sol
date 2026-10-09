@@ -95,6 +95,12 @@ contract Voting is Ownable {
         voters[msg.sender].hasVoted = true;
         proposalsArray[_id].voteCount++;
 
+        // mise à jour du gagnant après chaque vote : évite une boucle for
+        // lors du décompte, et donc un possible DoS
+        if (proposalsArray[_id].voteCount > proposalsArray[winningProposalID].voteCount) {
+            winningProposalID = _id;
+        }
+
         emit Voted(msg.sender, _id);
     }
 
@@ -133,14 +139,8 @@ contract Voting is Ownable {
 
    function tallyVotes() external onlyOwner {
        require(workflowStatus == WorkflowStatus.VotingSessionEnded, "Current status is not voting session ended");
-       uint _winningProposalId;
-      for (uint256 p = 0; p < proposalsArray.length; p++) {
-           if (proposalsArray[p].voteCount > proposalsArray[_winningProposalId].voteCount) {
-               _winningProposalId = p;
-          }
-       }
-       winningProposalID = _winningProposalId;
-       
+
+       // winningProposalID est déjà à jour, maintenu par setVote
        workflowStatus = WorkflowStatus.VotesTallied;
        emit WorkflowStatusChange(WorkflowStatus.VotingSessionEnded, WorkflowStatus.VotesTallied);
     }
