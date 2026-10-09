@@ -81,13 +81,10 @@ contract Voting is Ownable {
 
     function addProposal(string calldata _desc) external onlyVoters {
         require(workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, WrongStatus(WorkflowStatus.ProposalsRegistrationStarted, workflowStatus));
-        require(keccak256(abi.encode(_desc)) != keccak256(abi.encode("")), EmptyProposal());
+        require(bytes(_desc).length > 0, EmptyProposal());
         // voir que desc est different des autres
 
-        Proposal memory proposal;
-        proposal.description = _desc;
-        proposalsArray.push(proposal);
-        // proposalsArray.push(Proposal(_desc,0));
+        proposalsArray.push(Proposal(_desc,0));
         emit ProposalRegistered(proposalsArray.length-1);
     }
 
@@ -123,9 +120,7 @@ contract Voting is Ownable {
         require(workflowStatus == WorkflowStatus.RegisteringVoters, WrongStatus(WorkflowStatus.RegisteringVoters, workflowStatus));
         workflowStatus = WorkflowStatus.ProposalsRegistrationStarted;
         
-        Proposal memory proposal;
-        proposal.description = "GENESIS";
-        proposalsArray.push(proposal);
+        proposalsArray.push(Proposal("GENESIS", 0));
         
         emit WorkflowStatusChange(WorkflowStatus.RegisteringVoters, WorkflowStatus.ProposalsRegistrationStarted);
     }
