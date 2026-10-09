@@ -39,10 +39,17 @@ contract Voting is Ownable {
     event ProposalRegistered(uint proposalId);
     event Voted (address voter, uint proposalId);
 
+    error NotAVoter();
+    error WrongStatus(WorkflowStatus expected, WorkflowStatus current);
+    error AlreadyRegistered();
+    error EmptyProposal();
+    error AlreadyVoted();
+    error ProposalNotFound();
+
     constructor() Ownable(msg.sender) {    }
     
     modifier onlyVoters() {
-        require(voters[msg.sender].isRegistered, "You're not a voter");
+        require(voters[msg.sender].isRegistered, NotAVoter());
         _;
     }
     
@@ -62,8 +69,8 @@ contract Voting is Ownable {
     // ::::::::::::: REGISTRATION ::::::::::::: // 
 
     function addVoter(address _addr) external onlyOwner {
-        require(workflowStatus == WorkflowStatus.RegisteringVoters, 'Voters registration is not open yet');
-        require(voters[_addr].isRegistered != true, 'Already registered');
+        require(workflowStatus == WorkflowStatus.RegisteringVoters, WrongStatus(WorkflowStatus.RegisteringVoters, workflowStatus));
+        require(!voters[_addr].isRegistered, AlreadyRegistered());
     
         voters[_addr].isRegistered = true;
         emit VoterRegistered(_addr);
@@ -73,8 +80,8 @@ contract Voting is Ownable {
     // ::::::::::::: PROPOSAL ::::::::::::: // 
 
     function addProposal(string calldata _desc) external onlyVoters {
-        require(workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, 'Proposals are not allowed yet');
-        require(keccak256(abi.encode(_desc)) != keccak256(abi.encode("")), 'Vous ne pouvez pas ne rien proposer'); // facultatif
+        require(workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, WrongStatus(WorkflowStatus.ProposalsRegistrationStarted, workflowStatus));
+        require(keccak256(abi.encode(_desc)) != keccak256(abi.encode("")), EmptyProposal());
         // voir que desc est different des autres
 
         Proposal memory proposal;
@@ -87,9 +94,9 @@ contract Voting is Ownable {
     // ::::::::::::: VOTE ::::::::::::: //
 
     function setVote( uint _id) external onlyVoters {
-        require(workflowStatus == WorkflowStatus.VotingSessionStarted, 'Voting session havent started yet');
-        require(voters[msg.sender].hasVoted != true, 'You have already voted');
-        require(_id < proposalsArray.length, 'Proposal not found'); // pas obligé, et pas besoin du >0 car uint
+        require(workflowStatus == WorkflowStatus.VotingSessionStarted, WrongStatus(WorkflowStatus.VotingSessionStarted, workflowStatus));
+        require(!voters[msg.sender].hasVoted, AlreadyVoted());
+        require(_id < proposalsArray.length, ProposalNotFound());
 
         voters[msg.sender].votedProposalId = uint240(_id);
         voters[msg.sender].hasVoted = true;
@@ -113,7 +120,7 @@ contract Voting is Ownable {
 
 
     function startProposalsRegistering() external onlyOwner {
-        require(workflowStatus == WorkflowStatus.RegisteringVoters, 'Registering proposals cant be started now');
+        require(workflowStatus == WorkflowStatus.RegisteringVoters, WrongStatus(WorkflowStatus.RegisteringVoters, workflowStatus));
         workflowStatus = WorkflowStatus.ProposalsRegistrationStarted;
         
         Proposal memory proposal;
@@ -124,26 +131,26 @@ contract Voting is Ownable {
     }
 
     function endProposalsRegistering() external onlyOwner {
-        require(workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, 'Registering proposals havent started yet');
+        require(workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, WrongStatus(WorkflowStatus.ProposalsRegistrationStarted, workflowStatus));
         workflowStatus = WorkflowStatus.ProposalsRegistrationEnded;
         emit WorkflowStatusChange(WorkflowStatus.ProposalsRegistrationStarted, WorkflowStatus.ProposalsRegistrationEnded);
     }
 
     function startVotingSession() external onlyOwner {
-        require(workflowStatus == WorkflowStatus.ProposalsRegistrationEnded, 'Registering proposals phase is not finished');
+        require(workflowStatus == WorkflowStatus.ProposalsRegistrationEnded, WrongStatus(WorkflowStatus.ProposalsRegistrationEnded, workflowStatus));
         workflowStatus = WorkflowStatus.VotingSessionStarted;
         emit WorkflowStatusChange(WorkflowStatus.ProposalsRegistrationEnded, WorkflowStatus.VotingSessionStarted);
     }
 
     function endVotingSession() external onlyOwner {
-        require(workflowStatus == WorkflowStatus.VotingSessionStarted, 'Voting session havent started yet');
+        require(workflowStatus == WorkflowStatus.VotingSessionStarted, WrongStatus(WorkflowStatus.VotingSessionStarted, workflowStatus));
         workflowStatus = WorkflowStatus.VotingSessionEnded;
         emit WorkflowStatusChange(WorkflowStatus.VotingSessionStarted, WorkflowStatus.VotingSessionEnded);
     }
 
 
    function tallyVotes() external onlyOwner {
-       require(workflowStatus == WorkflowStatus.VotingSessionEnded, "Current status is not voting session ended");
+       require(workflowStatus == WorkflowStatus.VotingSessionEnded, WrongStatus(WorkflowStatus.VotingSessionEnded, workflowStatus));
 
        // winningProposalID est déjà à jour, maintenu par setVote
        workflowStatus = WorkflowStatus.VotesTallied;

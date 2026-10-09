@@ -53,24 +53,24 @@ describe("Voting contract", function () {
 
             // All functions (except addVoter, startProposalsRegistering)
             // could not be called in RegisteringVoters status
-            await expect(voting.connect(voter1).addProposal("proposal")).to.be.revertedWith(
-                "Proposals are not allowed yet",
-            );
-            await expect(voting.connect(voter1).setVote(0)).to.be.revertedWith(
-                "Voting session havent started yet",
-            );
-            await expect(voting.endProposalsRegistering()).to.be.revertedWith(
-                "Registering proposals havent started yet",
-            );
-            await expect(voting.startVotingSession()).to.be.revertedWith(
-                "Registering proposals phase is not finished",
-            );
-            await expect(voting.endVotingSession()).to.be.revertedWith(
-                "Voting session havent started yet",
-            );
-            await expect(voting.tallyVotes()).to.be.revertedWith(
-                "Current status is not voting session ended",
-            );
+            await expect(voting.connect(voter1).addProposal("proposal"))
+                .to.be.revertedWithCustomError(voting, "WrongStatus")
+                .withArgs(1n, 0n);
+            await expect(voting.connect(voter1).setVote(0))
+                .to.be.revertedWithCustomError(voting, "WrongStatus")
+                .withArgs(3n, 0n);
+            await expect(voting.endProposalsRegistering())
+                .to.be.revertedWithCustomError(voting, "WrongStatus")
+                .withArgs(1n, 0n);
+            await expect(voting.startVotingSession())
+                .to.be.revertedWithCustomError(voting, "WrongStatus")
+                .withArgs(2n, 0n);
+            await expect(voting.endVotingSession())
+                .to.be.revertedWithCustomError(voting, "WrongStatus")
+                .withArgs(3n, 0n);
+            await expect(voting.tallyVotes())
+                .to.be.revertedWithCustomError(voting, "WrongStatus")
+                .withArgs(4n, 0n);
 
             // startProposalsRegistering is allowed, so assert it last: it changes the status
             await voting.startProposalsRegistering();
@@ -79,9 +79,8 @@ describe("Voting contract", function () {
         describe("addVoter", function () {
             it("rejects an already registered voter", async function () {
                 await voting.addVoter(voter1.address);
-                await expect(voting.addVoter(voter1.address)).to.be.revertedWith(
-                    "Already registered"
-                );
+                await expect(voting.addVoter(voter1.address))
+                    .to.be.revertedWithCustomError(voting, "AlreadyRegistered");
             });
 
             it("stores the new voter's default state", async function () {
