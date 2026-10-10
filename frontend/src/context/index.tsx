@@ -26,7 +26,7 @@ export const modal = createAppKit({
   metadata,
   themeMode: 'light',
   features: {
-    analytics: true // Optional - defaults to your Cloud configuration
+    analytics: false
   },
   themeVariables: {
     '--w3m-accent': '#000000',
