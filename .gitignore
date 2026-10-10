@@ -39,6 +39,10 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# Keys and certificates
+*.pem
+*.key
+
 # OS and editors
 .DS_Store
 Thumbs.db
