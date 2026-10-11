@@ -103,7 +103,7 @@ contract Voting is Ownable {
         uint winningCount = proposalsArray[winningProposalID].voteCount;
         uint newCount = proposalsArray[_id].voteCount;
 
-        // GENESIS (index 0) est le vote blanc : à égalité, une vraie
+        // BLANK VOTE (index 0) est le vote blanc : à égalité, une vraie
         // proposition passe devant lui
         if (newCount > winningCount || (newCount == winningCount && winningProposalID == 0 && _id != 0)) {
             winningProposalID = uint248(_id);
@@ -119,7 +119,8 @@ contract Voting is Ownable {
         require(workflowStatus == WorkflowStatus.RegisteringVoters, WrongStatus(WorkflowStatus.RegisteringVoters, workflowStatus));
         workflowStatus = WorkflowStatus.ProposalsRegistrationStarted;
         
-        proposalsArray.push(Proposal("GENESIS", 0));
+        proposalsArray.push(Proposal("BLANK VOTE", 0));
+        emit ProposalRegistered(proposalsArray.length-1);
         
         emit WorkflowStatusChange(WorkflowStatus.RegisteringVoters, WorkflowStatus.ProposalsRegistrationStarted);
     }

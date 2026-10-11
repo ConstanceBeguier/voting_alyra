@@ -130,7 +130,7 @@ describe("Voting contract", function () {
         });
 
         describe("startProposalsRegistering", function () {
-            it("changes status and creates GENESIS proposal", async function () {
+            it("changes status and creates the blank vote proposal", async function () {
                 // getOneProposal is onlyVoters, so we need a registered reader
                 await voting.addVoter(voter1.address);
 
@@ -142,16 +142,24 @@ describe("Voting contract", function () {
 
                 await voting.startProposalsRegistering();
 
-                // after: ProposalsRegistrationStarted, with GENESIS as proposal 0
+                // after: ProposalsRegistrationStarted, with the blank vote as proposal 0
                 expect(await voting.workflowStatus()).to.equal(1n);
-                const genesis = await voting.connect(voter1).getOneProposal(0);
-                expect(genesis.description).to.equal("GENESIS");
-                expect(genesis.voteCount).to.equal(0n);
+                const blankVote = await voting.connect(voter1).getOneProposal(0);
+                expect(blankVote.description).to.equal("BLANK VOTE");
+                expect(blankVote.voteCount).to.equal(0n);
 
-                // GENESIS is the only proposal created
+                // the blank vote is the only proposal created
                 await expect(voting.connect(voter1).getOneProposal(1)).to.be.revertedWithPanic(
                     PANIC_CODES.ARRAY_ACCESS_OUT_OF_BOUNDS
                 );
+            });
+
+            it("emits ProposalRegistered for the blank vote", async function () {
+                // id 0, like any proposal added later, so consumers reading the
+                // logs see the blank vote too
+                await expect(voting.startProposalsRegistering())
+                    .to.emit(voting, "ProposalRegistered")
+                    .withArgs(0n);
             });
 
             it("emits WorkflowStatusChange with both statuses", async function () {

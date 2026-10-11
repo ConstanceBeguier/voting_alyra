@@ -39,7 +39,7 @@ Running Mocha tests
         ✔ rejects a non-owner caller
         ✔ accepts the zero address
       startProposalsRegistering
-        ✔ changes status and creates GENESIS proposal
+        ✔ changes status and creates the blank vote proposal
         ✔ emits WorkflowStatusChange with both statuses
         ✔ rejects a non-owner caller
 
