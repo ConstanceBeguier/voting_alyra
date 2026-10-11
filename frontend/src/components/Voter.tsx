@@ -32,7 +32,7 @@ export function Voter({ status }: { status: number | undefined }) {
           : 'You have not voted yet'}
       </p>
       <AddProposal status={status} />
-      <ProposalList />
+      <ProposalList status={status} hasVoted={voter.hasVoted} />
     </section>
   )
 }
