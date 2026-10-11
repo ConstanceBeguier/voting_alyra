@@ -1,8 +1,8 @@
 'use client'
 import { useState } from 'react'
-import { useAccount, useWaitForTransactionReceipt, useWriteContract } from 'wagmi'
 import { isAddress } from 'viem'
-import { votingAbi, getVotingAddress } from '@/contracts/voting'
+import { votingAbi } from '@/contracts/voting'
+import { useVotingWrite } from '@/hooks/useVotingWrite'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Loader2, UserPlus } from 'lucide-react'
@@ -10,17 +10,12 @@ import { Loader2, UserPlus } from 'lucide-react'
 const REGISTERING_VOTERS = 0
 
 export function AddVoter({ status }: { status: number | undefined }) {
-  const { chainId } = useAccount()
-  const votingAddress = getVotingAddress(chainId)
+  const { votingAddress, busy, writeContract } = useVotingWrite()
   const [value, setValue] = useState('')
-
-  const { data: hash, writeContract, isPending } = useWriteContract()
-  const { isLoading: isConfirming } = useWaitForTransactionReceipt({ hash })
 
   // voters can only be registered during the first phase
   if (status !== REGISTERING_VOTERS || !votingAddress) return null
 
-  const busy = isPending || isConfirming
   // checked here so a malformed address never costs a reverted transaction
   const valid = isAddress(value)
 

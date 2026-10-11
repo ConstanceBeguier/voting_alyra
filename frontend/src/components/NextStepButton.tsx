@@ -1,10 +1,6 @@
 'use client'
-import {
-  useAccount,
-  useWaitForTransactionReceipt,
-  useWriteContract,
-} from 'wagmi'
-import { votingAbi, getVotingAddress } from '@/contracts/voting'
+import { votingAbi } from '@/contracts/voting'
+import { useVotingWrite } from '@/hooks/useVotingWrite'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, Loader2 } from 'lucide-react'
 
@@ -17,21 +13,13 @@ const NEXT_STEP = [
 ] as const
 
 export function NextStepButton({ status }: { status: number | undefined }) {
-  const { chainId } = useAccount()
-  const votingAddress = getVotingAddress(chainId)
-
-  const { data: hash, writeContract, isPending } = useWriteContract()
-  // only used to keep the button disabled until the transaction is mined;
-  // the page refreshes the phase by watching WorkflowStatusChange
-  const { isLoading: isConfirming } = useWaitForTransactionReceipt({ hash })
+  const { votingAddress, busy, writeContract } = useVotingWrite()
 
   // the owner check lives in <Owner />
   if (!votingAddress || status === undefined) return null
 
   const step = NEXT_STEP[status]
   if (!step) return null
-
-  const busy = isPending || isConfirming
 
   return (
     // tallyVotes closes the vote for good, so it gets a warning colour
