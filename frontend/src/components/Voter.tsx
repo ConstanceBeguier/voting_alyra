@@ -2,6 +2,7 @@
 import { useAccount, useReadContract } from 'wagmi'
 import { votingAbi, getVotingAddress } from '@/contracts/voting'
 import { AddProposal } from '@/components/AddProposal'
+import { ProposalList } from '@/components/ProposalList'
 
 /** Everything only a registered voter may see. Renders nothing for anyone else. */
 export function Voter({ status }: { status: number | undefined }) {
@@ -31,6 +32,7 @@ export function Voter({ status }: { status: number | undefined }) {
           : 'You have not voted yet'}
       </p>
       <AddProposal status={status} />
+      <ProposalList />
     </section>
   )
 }
