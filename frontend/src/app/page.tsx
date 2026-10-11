@@ -34,7 +34,7 @@ export default function Home() {
       <WorkflowStatus status={status} />
       <Winner status={status} />
       <Owner status={status} />
-      <Voter />
+      <Voter status={status} />
     </div>
   );
 }

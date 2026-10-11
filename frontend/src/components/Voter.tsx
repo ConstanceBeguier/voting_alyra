@@ -1,9 +1,10 @@
 'use client'
 import { useAccount, useReadContract } from 'wagmi'
 import { votingAbi, getVotingAddress } from '@/contracts/voting'
+import { AddProposal } from '@/components/AddProposal'
 
 /** Everything only a registered voter may see. Renders nothing for anyone else. */
-export function Voter() {
+export function Voter({ status }: { status: number | undefined }) {
   const { address, chainId } = useAccount()
   const votingAddress = getVotingAddress(chainId)
 
@@ -29,6 +30,7 @@ export function Voter() {
           ? `You voted for proposal #${voter.votedProposalId}`
           : 'You have not voted yet'}
       </p>
+      <AddProposal status={status} />
     </section>
   )
 }
