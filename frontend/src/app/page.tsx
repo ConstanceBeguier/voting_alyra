@@ -4,6 +4,7 @@ import { isAddressEqual } from 'viem'
 import { votingAbi, getVotingAddress } from '@/contracts/voting'
 import { WorkflowStatus } from '@/components/WorkflowStatus'
 import { NextStepButton } from '@/components/NextStepButton'
+import { Winner } from '@/components/Winner'
 
 export default function Home() {
   const { address, chainId } = useAccount();
@@ -19,6 +20,7 @@ export default function Home() {
     <div>
       <WorkflowStatus />
       <NextStepButton />
+      <Winner />
       {address && owner && (
         <p>
           {isAddressEqual(owner, address)
