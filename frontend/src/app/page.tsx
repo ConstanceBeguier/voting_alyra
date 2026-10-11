@@ -2,6 +2,7 @@
 import { useAccount, useReadContract } from 'wagmi'
 import { isAddressEqual } from 'viem'
 import { votingAbi, getVotingAddress } from '@/contracts/voting'
+import { WorkflowStatus } from '@/components/WorkflowStatus'
 
 export default function Home() {
   const { address, chainId } = useAccount();
@@ -15,6 +16,7 @@ export default function Home() {
 
   return (
     <div>
+      <WorkflowStatus />
       {address && owner && (
         <p>
           {isAddressEqual(owner, address)
