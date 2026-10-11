@@ -3,6 +3,7 @@ import { useAccount, useReadContract } from 'wagmi'
 import { isAddressEqual } from 'viem'
 import { votingAbi, getVotingAddress } from '@/contracts/voting'
 import { NextStepButton } from '@/components/NextStepButton'
+import { AddVoter } from '@/components/AddVoter'
 
 /** Everything only the contract owner may see. Renders nothing for anyone else. */
 export function Owner({ status }: { status: number | undefined }) {
@@ -19,6 +20,7 @@ export function Owner({ status }: { status: number | undefined }) {
   return (
     <section className="flex flex-col items-start gap-3">
       <h2 className="text-lg font-semibold">Admin</h2>
+      <AddVoter status={status} />
       <NextStepButton status={status} />
     </section>
   )
