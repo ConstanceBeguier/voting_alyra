@@ -40,14 +40,15 @@ Running Mocha tests
         ✔ accepts the zero address
       startProposalsRegistering
         ✔ changes status and creates the blank vote proposal
+        ✔ emits ProposalRegistered for the blank vote
         ✔ emits WorkflowStatusChange with both statuses
         ✔ rejects a non-owner caller
 
 
-  11 passing (69ms)
+  12 passing (204ms)
 
 
-11 passing (11 mocha)
+12 passing (12 mocha)
 ```
 
 Only the `RegisteringVoters` workflow status is covered so far.
@@ -70,19 +71,19 @@ Saved html report to <project>/coverage/html
 ╟──────────────────────┬────────┬─────────────┬─────────────────────────────────────────────────────────────────────────────╢
 ║ File Path            │ Line % │ Statement % │ Uncovered Lines                                                             ║
 ╟──────────────────────┼────────┼─────────────┼─────────────────────────────────────────────────────────────────────────────╢
-║ contracts/Voting.sol │ 46.15  │ 45.00       │ 83, 86-87, 94-95, 97-99, 103-104, 108-109, 112, 129-130, 135-136, 141-142,… ║
+║ contracts/Voting.sol │ 47.50  │ 46.34       │ 83, 86-87, 94-95, 97-99, 103-104, 108-109, 112, 130-131, 136-137, 142-143,… ║
 ╟──────────────────────┼────────┼─────────────┼─────────────────────────────────────────────────────────────────────────────╢
-║ Total                │ 46.15  │ 45.00       │                                                                             ║
+║ Total                │ 47.50  │ 46.34       │                                                                             ║
 ╚══════════════════════╧════════╧═════════════╧═════════════════════════════════════════════════════════════════════════════╝
 ```
 
 | File | Line % | Statement % |
 | --- | --- | --- |
-| `contracts/Voting.sol` | 46.15 | 45.00 |
-| **Total** | **46.15** | **45.00** |
+| `contracts/Voting.sol` | 47.50 | 46.34 |
+| **Total** | **47.50** | **46.34** |
 
 The report truncates the uncovered lines. The full list is 83, 86-87, 94-95,
-97-99, 103-104, 108-109, 112, 129-130, 135-136, 141-142, 150-151 — `addProposal`,
+97-99, 103-104, 108-109, 112, 130-131, 136-137, 142-143, 151-152 — `addProposal`,
 `setVote` and every workflow transition after `startProposalsRegistering`, which
 matches the tested scope described above.
 
