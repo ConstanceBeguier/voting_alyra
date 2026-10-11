@@ -4,20 +4,12 @@ import { votingAbi, getVotingAddress } from '@/contracts/voting'
 
 const VOTES_TALLIED = 5
 
-export function Winner() {
+export function Winner({ status }: { status: number | undefined }) {
   const { chainId } = useAccount()
-  const votingAddress = getVotingAddress(chainId)
-
-  const { data: status } = useReadContract({
-    address: votingAddress,
-    abi: votingAbi,
-    functionName: 'workflowStatus',
-  })
-
   const tallied = status === VOTES_TALLIED
 
   const { data: winningId } = useReadContract({
-    address: votingAddress,
+    address: getVotingAddress(chainId),
     abi: votingAbi,
     functionName: 'winningProposalID',
     query: { enabled: tallied },

@@ -1,7 +1,3 @@
-'use client'
-import { useAccount, useReadContract } from 'wagmi'
-import { votingAbi, getVotingAddress } from '@/contracts/voting'
-
 const LABELS = [
   'Registering voters',
   'Proposals registration started',
@@ -11,15 +7,7 @@ const LABELS = [
   'Votes tallied',
 ] as const
 
-export function WorkflowStatus() {
-  const { chainId } = useAccount()
-
-  const { data: status } = useReadContract({
-    address: getVotingAddress(chainId),
-    abi: votingAbi,
-    functionName: 'workflowStatus',
-  })
-
+export function WorkflowStatus({ status }: { status: number | undefined }) {
   if (status === undefined) return null
 
   return (

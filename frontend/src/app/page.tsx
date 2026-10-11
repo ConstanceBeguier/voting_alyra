@@ -1,5 +1,6 @@
 'use client';
-import { useAccount, useReadContract } from 'wagmi'
+import { useCallback } from 'react'
+import { useAccount, useReadContract, useWatchContractEvent } from 'wagmi'
 import { isAddressEqual } from 'viem'
 import { votingAbi, getVotingAddress } from '@/contracts/voting'
 import { WorkflowStatus } from '@/components/WorkflowStatus'
@@ -16,11 +17,29 @@ export default function Home() {
     functionName: 'owner',
   });
 
+  const { data: status, refetch: refetchStatus } = useReadContract({
+    address: votingAddress,
+    abi: votingAbi,
+    functionName: 'workflowStatus',
+  });
+
+  const onStatusChanged = useCallback(() => {
+    refetchStatus();
+  }, [refetchStatus]);
+
+  useWatchContractEvent({
+    address: votingAddress,
+    abi: votingAbi,
+    eventName: 'WorkflowStatusChange',
+    enabled: Boolean(votingAddress),
+    onLogs: onStatusChanged,
+  });
+
   return (
     <div>
-      <WorkflowStatus />
-      <NextStepButton />
-      <Winner />
+      <WorkflowStatus status={status} />
+      <NextStepButton status={status} />
+      <Winner status={status} />
       {address && owner && (
         <p>
           {isAddressEqual(owner, address)

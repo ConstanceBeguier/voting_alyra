@@ -1,5 +1,4 @@
 'use client'
-import { useEffect } from 'react'
 import {
   useAccount,
   useReadContract,
@@ -19,7 +18,7 @@ const NEXT_STEP = [
   { fn: 'tallyVotes', label: 'Tally votes' },
 ] as const
 
-export function NextStepButton() {
+export function NextStepButton({ status }: { status: number | undefined }) {
   const { address, chainId } = useAccount()
   const votingAddress = getVotingAddress(chainId)
 
@@ -29,19 +28,10 @@ export function NextStepButton() {
     functionName: 'owner',
   })
 
-  const { data: status, refetch } = useReadContract({
-    address: votingAddress,
-    abi: votingAbi,
-    functionName: 'workflowStatus',
-  })
-
   const { data: hash, writeContract, isPending } = useWriteContract()
-  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash })
-
-  // the phase only changes once the transaction is mined
-  useEffect(() => {
-    if (isSuccess) refetch()
-  }, [isSuccess, refetch])
+  // only used to keep the button disabled until the transaction is mined;
+  // the page refreshes the phase by watching WorkflowStatusChange
+  const { isLoading: isConfirming } = useWaitForTransactionReceipt({ hash })
 
   if (!votingAddress || !address || !owner || !isAddressEqual(owner, address)) {
     return null
