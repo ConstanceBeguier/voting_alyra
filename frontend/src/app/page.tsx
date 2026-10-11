@@ -4,6 +4,7 @@ import { useAccount, useReadContract, useWatchContractEvent } from 'wagmi'
 import { votingAbi, getVotingAddress } from '@/contracts/voting'
 import { WorkflowStatus } from '@/components/WorkflowStatus'
 import { Owner } from '@/components/Owner'
+import { Voter } from '@/components/Voter'
 import { Winner } from '@/components/Winner'
 
 export default function Home() {
@@ -33,6 +34,7 @@ export default function Home() {
       <WorkflowStatus status={status} />
       <Winner status={status} />
       <Owner status={status} />
+      <Voter />
     </div>
   );
 }
