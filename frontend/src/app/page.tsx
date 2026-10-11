@@ -1,5 +1,4 @@
 'use client';
-import { ConnectButton } from "@/components/ConnectButton";
 import { useAccount, useReadContract } from 'wagmi'
 import { isAddressEqual } from 'viem'
 import { votingAbi, getVotingAddress } from '@/contracts/voting'
@@ -16,7 +15,6 @@ export default function Home() {
 
   return (
     <div>
-      <ConnectButton />
       {address && owner && (
         <p>
           {isAddressEqual(owner, address)
