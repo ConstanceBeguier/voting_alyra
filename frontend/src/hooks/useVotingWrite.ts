@@ -17,12 +17,28 @@ export function useVotingWrite() {
   const votingAddress = getVotingAddress(chainId)
   const queryClient = useQueryClient()
 
-  const { data: hash, writeContract, isPending } = useWriteContract()
-  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash })
+  const { data: hash, writeContract, isPending, error: writeError } = useWriteContract()
+  const {
+    isLoading: isConfirming,
+    isSuccess,
+    error: receiptError,
+  } = useWaitForTransactionReceipt({ hash })
 
   useEffect(() => {
     if (isSuccess) queryClient.invalidateQueries()
   }, [isSuccess, queryClient])
 
-  return { votingAddress, busy: isPending || isConfirming, writeContract }
+  return {
+    votingAddress,
+    busy: isPending || isConfirming,
+    writeContract,
+    // what <TransactionAlert /> needs: the signature can be refused, and a
+    // transaction that was accepted can still revert once mined
+    tx: {
+      isPending,
+      isConfirming,
+      isSuccess,
+      error: writeError ?? receiptError,
+    },
+  }
 }

@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { isAddress } from 'viem'
 import { votingAbi } from '@/contracts/voting'
 import { useVotingWrite } from '@/hooks/useVotingWrite'
+import { TransactionAlert } from '@/components/TransactionAlert'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Loader2, UserPlus } from 'lucide-react'
@@ -10,7 +11,7 @@ import { Loader2, UserPlus } from 'lucide-react'
 const REGISTERING_VOTERS = 0
 
 export function AddVoter({ status }: { status: number | undefined }) {
-  const { votingAddress, busy, writeContract } = useVotingWrite()
+  const { votingAddress, busy, writeContract, tx } = useVotingWrite()
   const [value, setValue] = useState('')
 
   // voters can only be registered during the first phase
@@ -20,32 +21,35 @@ export function AddVoter({ status }: { status: number | undefined }) {
   const valid = isAddress(value)
 
   return (
-    <form
-      className="flex w-full max-w-md items-center gap-2"
-      onSubmit={(event) => {
-        event.preventDefault()
-        if (!valid) return
-        writeContract({
-          address: votingAddress,
-          abi: votingAbi,
-          functionName: 'addVoter',
-          args: [value],
-        })
-        setValue('')
-      }}
-    >
-      <Input
-        value={value}
-        onChange={(event) => setValue(event.target.value)}
-        placeholder="0x…"
-        aria-label="Voter address"
-        aria-invalid={value !== '' && !valid}
-        disabled={busy}
-      />
-      <Button type="submit" disabled={!valid || busy}>
-        {busy ? <Loader2 className="animate-spin" /> : <UserPlus />}
-        {busy ? 'Confirming…' : 'Add voter'}
-      </Button>
-    </form>
+    <div className="flex w-full max-w-md flex-col gap-2">
+      <form
+        className="flex w-full max-w-md items-center gap-2"
+        onSubmit={(event) => {
+          event.preventDefault()
+          if (!valid) return
+          writeContract({
+            address: votingAddress,
+            abi: votingAbi,
+            functionName: 'addVoter',
+            args: [value],
+          })
+          setValue('')
+        }}
+      >
+        <Input
+          value={value}
+          onChange={(event) => setValue(event.target.value)}
+          placeholder="0x…"
+          aria-label="Voter address"
+          aria-invalid={value !== '' && !valid}
+          disabled={busy}
+        />
+        <Button type="submit" disabled={!valid || busy}>
+          {busy ? <Loader2 className="animate-spin" /> : <UserPlus />}
+          {busy ? 'Confirming…' : 'Add voter'}
+        </Button>
+      </form>
+      <TransactionAlert tx={tx} />
+    </div>
   )
 }

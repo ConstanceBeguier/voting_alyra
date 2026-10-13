@@ -1,6 +1,7 @@
 'use client'
 import { votingAbi } from '@/contracts/voting'
 import { useVotingWrite } from '@/hooks/useVotingWrite'
+import { TransactionAlert } from '@/components/TransactionAlert'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, Loader2 } from 'lucide-react'
 
@@ -13,7 +14,7 @@ const NEXT_STEP = [
 ] as const
 
 export function NextStepButton({ status }: { status: number | undefined }) {
-  const { votingAddress, busy, writeContract } = useVotingWrite()
+  const { votingAddress, busy, writeContract, tx } = useVotingWrite()
 
   // the owner check lives in <Owner />
   if (!votingAddress || status === undefined) return null
@@ -22,17 +23,20 @@ export function NextStepButton({ status }: { status: number | undefined }) {
   if (!step) return null
 
   return (
-    // tallyVotes closes the vote for good, so it gets a warning colour
-    <Button
-      size="lg"
-      variant={step.fn === 'tallyVotes' ? 'destructive' : 'default'}
-      disabled={busy}
-      onClick={() =>
-        writeContract({ address: votingAddress, abi: votingAbi, functionName: step.fn })
-      }
-    >
-      {busy ? <Loader2 className="animate-spin" /> : <ArrowRight />}
-      {busy ? 'Confirming…' : step.label}
-    </Button>
+    <div className="flex flex-col items-start gap-2">
+      {/* tallyVotes closes the vote for good, so it gets a warning colour */}
+      <Button
+        size="lg"
+        variant={step.fn === 'tallyVotes' ? 'destructive' : 'default'}
+        disabled={busy}
+        onClick={() =>
+          writeContract({ address: votingAddress, abi: votingAbi, functionName: step.fn })
+        }
+      >
+        {busy ? <Loader2 className="animate-spin" /> : <ArrowRight />}
+        {busy ? 'Confirming…' : step.label}
+      </Button>
+      <TransactionAlert tx={tx} />
+    </div>
   )
 }

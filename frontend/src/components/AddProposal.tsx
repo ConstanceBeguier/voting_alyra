@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { votingAbi } from '@/contracts/voting'
 import { useVotingWrite } from '@/hooks/useVotingWrite'
+import { TransactionAlert } from '@/components/TransactionAlert'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Loader2, Plus } from 'lucide-react'
@@ -9,7 +10,7 @@ import { Loader2, Plus } from 'lucide-react'
 const PROPOSALS_REGISTRATION_STARTED = 1
 
 export function AddProposal({ status }: { status: number | undefined }) {
-  const { votingAddress, busy, writeContract } = useVotingWrite()
+  const { votingAddress, busy, writeContract, tx } = useVotingWrite()
   const [description, setDescription] = useState('')
 
   // proposals are only accepted during that one phase
@@ -19,31 +20,34 @@ export function AddProposal({ status }: { status: number | undefined }) {
   const valid = description.trim().length > 0
 
   return (
-    <form
-      className="flex w-full max-w-md items-center gap-2"
-      onSubmit={(event) => {
-        event.preventDefault()
-        if (!valid) return
-        writeContract({
-          address: votingAddress,
-          abi: votingAbi,
-          functionName: 'addProposal',
-          args: [description.trim()],
-        })
-        setDescription('')
-      }}
-    >
-      <Input
-        value={description}
-        onChange={(event) => setDescription(event.target.value)}
-        placeholder="Describe your proposal"
-        aria-label="Proposal description"
-        disabled={busy}
-      />
-      <Button type="submit" disabled={!valid || busy}>
-        {busy ? <Loader2 className="animate-spin" /> : <Plus />}
-        {busy ? 'Confirming…' : 'Add proposal'}
-      </Button>
-    </form>
+    <div className="flex w-full max-w-md flex-col gap-2">
+      <form
+        className="flex w-full max-w-md items-center gap-2"
+        onSubmit={(event) => {
+          event.preventDefault()
+          if (!valid) return
+          writeContract({
+            address: votingAddress,
+            abi: votingAbi,
+            functionName: 'addProposal',
+            args: [description.trim()],
+          })
+          setDescription('')
+        }}
+      >
+        <Input
+          value={description}
+          onChange={(event) => setDescription(event.target.value)}
+          placeholder="Describe your proposal"
+          aria-label="Proposal description"
+          disabled={busy}
+        />
+        <Button type="submit" disabled={!valid || busy}>
+          {busy ? <Loader2 className="animate-spin" /> : <Plus />}
+          {busy ? 'Confirming…' : 'Add proposal'}
+        </Button>
+      </form>
+      <TransactionAlert tx={tx} />
+    </div>
   )
 }
