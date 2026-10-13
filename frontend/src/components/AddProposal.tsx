@@ -1,6 +1,5 @@
 'use client'
 import { useState } from 'react'
-import { votingAbi } from '@/contracts/voting'
 import { useVotingWrite } from '@/hooks/useVotingWrite'
 import { TransactionAlert } from '@/components/TransactionAlert'
 import { Button } from '@/components/ui/button'
@@ -10,7 +9,7 @@ import { Loader2, Plus } from 'lucide-react'
 const PROPOSALS_REGISTRATION_STARTED = 1
 
 export function AddProposal({ status }: { status: number | undefined }) {
-  const { votingAddress, busy, writeContract, tx } = useVotingWrite()
+  const { votingAddress, busy, write, tx } = useVotingWrite()
   const [description, setDescription] = useState('')
 
   // proposals are only accepted during that one phase
@@ -26,12 +25,7 @@ export function AddProposal({ status }: { status: number | undefined }) {
         onSubmit={(event) => {
           event.preventDefault()
           if (!valid) return
-          writeContract({
-            address: votingAddress,
-            abi: votingAbi,
-            functionName: 'addProposal',
-            args: [description.trim()],
-          })
+          write('addProposal', [description.trim()])
           setDescription('')
         }}
       >

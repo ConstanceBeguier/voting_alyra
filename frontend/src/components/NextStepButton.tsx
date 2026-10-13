@@ -1,5 +1,4 @@
 'use client'
-import { votingAbi } from '@/contracts/voting'
 import { useVotingWrite } from '@/hooks/useVotingWrite'
 import { TransactionAlert } from '@/components/TransactionAlert'
 import { Button } from '@/components/ui/button'
@@ -14,7 +13,7 @@ const NEXT_STEP = [
 ] as const
 
 export function NextStepButton({ status }: { status: number | undefined }) {
-  const { votingAddress, busy, writeContract, tx } = useVotingWrite()
+  const { votingAddress, busy, write, tx } = useVotingWrite()
 
   // the owner check lives in <Owner />
   if (!votingAddress || status === undefined) return null
@@ -30,7 +29,7 @@ export function NextStepButton({ status }: { status: number | undefined }) {
         variant={step.fn === 'tallyVotes' ? 'destructive' : 'default'}
         disabled={busy}
         onClick={() =>
-          writeContract({ address: votingAddress, abi: votingAbi, functionName: step.fn })
+          write(step.fn)
         }
       >
         {busy ? <Loader2 className="animate-spin" /> : <ArrowRight />}

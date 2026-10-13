@@ -1,7 +1,6 @@
 'use client'
 import { useState } from 'react'
 import { isAddress } from 'viem'
-import { votingAbi } from '@/contracts/voting'
 import { useVotingWrite } from '@/hooks/useVotingWrite'
 import { TransactionAlert } from '@/components/TransactionAlert'
 import { Button } from '@/components/ui/button'
@@ -11,7 +10,7 @@ import { Loader2, UserPlus } from 'lucide-react'
 const REGISTERING_VOTERS = 0
 
 export function AddVoter({ status }: { status: number | undefined }) {
-  const { votingAddress, busy, writeContract, tx } = useVotingWrite()
+  const { votingAddress, busy, write, tx } = useVotingWrite()
   const [value, setValue] = useState('')
 
   // voters can only be registered during the first phase
@@ -27,12 +26,7 @@ export function AddVoter({ status }: { status: number | undefined }) {
         onSubmit={(event) => {
           event.preventDefault()
           if (!valid) return
-          writeContract({
-            address: votingAddress,
-            abi: votingAbi,
-            functionName: 'addVoter',
-            args: [value],
-          })
+          write('addVoter', [value])
           setValue('')
         }}
       >
