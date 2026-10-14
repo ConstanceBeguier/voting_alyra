@@ -1,11 +1,11 @@
 'use client'
-import { useAccount, useReadContract } from 'wagmi'
+import { useChainId, useReadContract } from 'wagmi'
 import { votingAbi, getVotingAddress } from '@/contracts/voting'
 
 const VOTES_TALLIED = 5
 
 export function Winner({ status }: { status: number | undefined }) {
-  const { chainId } = useAccount()
+  const chainId = useChainId()
   const tallied = status === VOTES_TALLIED
 
   const { data: winningId } = useReadContract({
