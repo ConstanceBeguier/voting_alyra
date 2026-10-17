@@ -11,7 +11,11 @@ import { useWatchProposals } from '@/hooks/useVotingEvents'
 import { ListError } from '@/components/ListError'
 import { WorkflowStatus } from '@/lib/workflow'
 
-/** A description is written once and never changes, so it is cacheable. */
+/**
+ * A description is written once and never changes, so it is cacheable. Keyed by
+ * the registering transaction, not the contract address: a local redeploy
+ * reuses the same deterministic address with different proposals.
+ */
 const descriptions = new Map<string, string>()
 
 export function ProposalList({
@@ -44,11 +48,10 @@ export function ProposalList({
         fromBlock,
       })
 
-      const ids = logs.map((log) => log.args.proposalId!)
-
       return Promise.all(
-        ids.map(async (id) => {
-          const key = `${votingAddress}:${id}`
+        logs.map(async (log) => {
+          const id = log.args.proposalId!
+          const key = log.transactionHash
           let description = descriptions.get(key)
 
           if (description === undefined) {
