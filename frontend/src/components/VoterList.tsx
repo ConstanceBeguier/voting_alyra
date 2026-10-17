@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useChainId, usePublicClient } from 'wagmi'
 import { votingAbi, getVotingAddress } from '@/contracts/voting'
 import { useWatchVoters } from '@/hooks/useVotingEvents'
+import { ListError } from '@/components/ListError'
 
 export function VoterList() {
   const chainId = useChainId()
@@ -11,7 +12,7 @@ export function VoterList() {
 
   useWatchVoters(votingAddress)
 
-  const { data: voters, isPending } = useQuery({
+  const { data: voters, isPending, error } = useQuery({
     queryKey: ['voters', chainId, votingAddress],
     enabled: Boolean(client && votingAddress),
     queryFn: async () => {
@@ -27,6 +28,7 @@ export function VoterList() {
   })
 
   if (isPending) return null
+  if (error) return <ListError what="voters" error={error} />
 
   return (
     <div className="flex flex-col items-start gap-2">

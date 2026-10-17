@@ -4,6 +4,7 @@ import { useAccount, useChainId, usePublicClient } from 'wagmi'
 import { votingAbi, getVotingAddress } from '@/contracts/voting'
 import { VoteButton } from '@/components/VoteButton'
 import { useWatchProposals } from '@/hooks/useVotingEvents'
+import { ListError } from '@/components/ListError'
 
 const VOTING_SESSION_STARTED = 3
 
@@ -21,7 +22,7 @@ export function ProposalList({
 
   useWatchProposals(votingAddress)
 
-  const { data: proposals, isPending } = useQuery({
+  const { data: proposals, isPending, error } = useQuery({
     queryKey: ['proposals', chainId, votingAddress, address],
     enabled: Boolean(client && votingAddress && address),
     queryFn: async () => {
@@ -51,6 +52,7 @@ export function ProposalList({
   })
 
   if (isPending) return null
+  if (error) return <ListError what="proposals" error={error} />
 
   // one vote per voter, only while the session is open
   const canVote = status === VOTING_SESSION_STARTED && !hasVoted
