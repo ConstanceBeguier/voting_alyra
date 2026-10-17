@@ -1,7 +1,8 @@
 'use client';
 import { useCallback } from 'react'
-import { useChainId, useReadContract, useWatchContractEvent } from 'wagmi'
+import { useChainId, useReadContract } from 'wagmi'
 import { votingAbi, getVotingAddress } from '@/contracts/voting'
+import { useVotingEvents } from '@/hooks/useVotingEvents'
 import { ConnectPrompt } from '@/components/ConnectPrompt'
 import { WorkflowStatus } from '@/components/WorkflowStatus'
 import { Owner } from '@/components/Owner'
@@ -24,13 +25,8 @@ export default function Home() {
     refetchStatus();
   }, [refetchStatus]);
 
-  useWatchContractEvent({
-    address: votingAddress,
-    abi: votingAbi,
-    eventName: 'WorkflowStatusChange',
-    enabled: Boolean(votingAddress),
-    onLogs: onStatusChanged,
-  });
+  // every on-chain change the screen depends on, whoever triggered it
+  useVotingEvents(votingAddress, onStatusChanged);
 
   return (
     <div className="flex flex-col items-start gap-3">
