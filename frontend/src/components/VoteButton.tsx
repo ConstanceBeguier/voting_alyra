@@ -16,7 +16,7 @@ export function VoteButton({ proposalId }: { proposalId: bigint }) {
         variant="outline"
         disabled={busy}
         onClick={() =>
-          write('setVote', [proposalId])
+          write('setVote', [proposalId], `Your vote for proposal #${proposalId} has been recorded.`)
         }
       >
         {busy ? <Loader2 className="animate-spin" /> : <Check />}

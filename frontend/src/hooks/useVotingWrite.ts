@@ -29,6 +29,7 @@ export function useVotingWrite() {
   const client = usePublicClient()
   const queryClient = useQueryClient()
   const [simulationError, setSimulationError] = useState<Error | null>(null)
+  const [success, setSuccess] = useState<string>()
 
   const { data: hash, writeContract, isPending, error: writeError } = useWriteContract()
   const {
@@ -48,16 +49,20 @@ export function useVotingWrite() {
    */
   async function write<F extends VotingFunction>(
     functionName: F,
-    ...args: VotingArgs<F> extends readonly [] ? [] : [VotingArgs<F>]
+    args: VotingArgs<F>,
+    /** shown once the transaction is mined; captured now, since the caller's
+     *  inputs are usually cleared on submit */
+    successMessage?: string,
   ) {
     setSimulationError(null)
+    setSuccess(successMessage)
     if (!client || !address || !votingAddress) return
 
     const params = {
       address: votingAddress,
       abi: votingAbi,
       functionName,
-      args: args[0],
+      args,
     } as const
 
     try {
@@ -78,6 +83,7 @@ export function useVotingWrite() {
       isConfirming,
       isSuccess,
       error: simulationError ?? writeError ?? receiptError,
+      success,
     },
   }
 }

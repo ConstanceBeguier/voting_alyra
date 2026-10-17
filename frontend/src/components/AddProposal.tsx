@@ -25,7 +25,7 @@ export function AddProposal({ status }: { status: number | undefined }) {
         onSubmit={(event) => {
           event.preventDefault()
           if (!valid) return
-          write('addProposal', [description.trim()])
+          write('addProposal', [description.trim()], `Your proposal "${description.trim()}" has been added.`)
           setDescription('')
         }}
       >

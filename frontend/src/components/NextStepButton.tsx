@@ -5,11 +5,27 @@ import { Button } from '@/components/ui/button'
 import { ArrowRight, Loader2 } from 'lucide-react'
 
 const NEXT_STEP = [
-  { fn: 'startProposalsRegistering', label: 'Start proposals registration' },
-  { fn: 'endProposalsRegistering', label: 'End proposals registration' },
-  { fn: 'startVotingSession', label: 'Start voting session' },
-  { fn: 'endVotingSession', label: 'End voting session' },
-  { fn: 'tallyVotes', label: 'Tally votes' },
+  {
+    fn: 'startProposalsRegistering',
+    label: 'Start proposals registration',
+    done: 'Proposals registration is now open.',
+  },
+  {
+    fn: 'endProposalsRegistering',
+    label: 'End proposals registration',
+    done: 'Proposals registration is closed.',
+  },
+  {
+    fn: 'startVotingSession',
+    label: 'Start voting session',
+    done: 'The voting session is now open.',
+  },
+  {
+    fn: 'endVotingSession',
+    label: 'End voting session',
+    done: 'The voting session is closed.',
+  },
+  { fn: 'tallyVotes', label: 'Tally votes', done: 'Votes have been tallied.' },
 ] as const
 
 export function NextStepButton({ status }: { status: number | undefined }) {
@@ -29,7 +45,7 @@ export function NextStepButton({ status }: { status: number | undefined }) {
         variant={step.fn === 'tallyVotes' ? 'destructive' : 'default'}
         disabled={busy}
         onClick={() =>
-          write(step.fn)
+          write(step.fn, [], step.done)
         }
       >
         {busy ? <Loader2 className="animate-spin" /> : <ArrowRight />}

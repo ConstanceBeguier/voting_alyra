@@ -26,7 +26,7 @@ export function AddVoter({ status }: { status: number | undefined }) {
         onSubmit={(event) => {
           event.preventDefault()
           if (!valid) return
-          write('addVoter', [value])
+          write('addVoter', [value], `The voter ${value} is registered.`)
           setValue('')
         }}
       >

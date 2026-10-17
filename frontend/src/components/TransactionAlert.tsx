@@ -8,6 +8,7 @@ export type TxState = {
   isConfirming: boolean
   isSuccess: boolean
   error: Error | null
+  success?: string
 }
 
 // the contract's custom errors, in plain words
@@ -69,6 +70,7 @@ export function TransactionAlert({ tx }: { tx: TxState }) {
       <Alert>
         <CircleCheck />
         <AlertTitle>Transaction confirmed</AlertTitle>
+        {tx.success && <AlertDescription>{tx.success}</AlertDescription>}
       </Alert>
     )
   }
