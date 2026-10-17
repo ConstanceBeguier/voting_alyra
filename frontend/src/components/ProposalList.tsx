@@ -1,4 +1,5 @@
 'use client'
+import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useAccount, useChainId, usePublicClient } from 'wagmi'
 import {
@@ -6,12 +7,14 @@ import {
   getVotingAddress,
   getVotingDeployBlock,
 } from '@/contracts/voting'
-import { VoteButton } from '@/components/VoteButton'
 import { useWatchProposals } from '@/hooks/useVotingEvents'
+import { useVotingWrite } from '@/hooks/useVotingWrite'
 import { ListError } from '@/components/ListError'
+import { TransactionAlert } from '@/components/TransactionAlert'
+import { Button } from '@/components/ui/button'
 import { WorkflowStatus } from '@/lib/workflow'
 import { cn } from 'cn'
-import { Check, Lightbulb } from 'lucide-react'
+import { Check, Lightbulb, Loader2, Vote } from 'lucide-react'
 
 /**
  * A description is written once and never changes, so it is cacheable. Keyed by
@@ -76,6 +79,10 @@ export function ProposalList({
     },
   })
 
+  // one write for the whole list: while a vote is pending, no other can be sent
+  const { busy, write, tx } = useVotingWrite()
+  const [choice, setChoice] = useState<bigint>()
+
   if (isPending) return null
   if (error) return <ListError what="proposals" error={error} />
 
@@ -92,6 +99,7 @@ export function ProposalList({
         <ul className="grid gap-3 sm:grid-cols-2">
           {proposals.map((proposal, index) => {
             const mine = votedProposalId === proposal.id
+            const chosen = choice === proposal.id
             // the contract always registers the blank vote first
             const blank = proposal.id === 0n
 
@@ -124,7 +132,26 @@ export function ProposalList({
                     <Check className="size-3.5" /> Your vote
                   </span>
                 )}
-                {canVote && <VoteButton proposalId={proposal.id} />}
+                {canVote && (
+                  <Button
+                    size="sm"
+                    variant="brand"
+                    disabled={busy}
+                    onClick={() => {
+                      setChoice(proposal.id)
+                      write('setVote', [proposal.id], `Your vote for proposal #${proposal.id} has been recorded.`)
+                    }}
+                  >
+                    {busy && chosen ? <Loader2 className="animate-spin" /> : <Vote />}
+                    {busy && chosen ? 'Confirming…' : 'Vote'}
+                  </Button>
+                )}
+                {chosen && (
+                  // full width, so a message wraps under the card instead of squeezing it
+                  <div className="basis-full empty:hidden">
+                    <TransactionAlert tx={tx} />
+                  </div>
+                )}
               </li>
             )
           })}
