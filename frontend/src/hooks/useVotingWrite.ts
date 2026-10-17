@@ -31,7 +31,13 @@ export function useVotingWrite() {
   const [simulationError, setSimulationError] = useState<Error | null>(null)
   const [success, setSuccess] = useState<string>()
 
-  const { data: hash, writeContract, isPending, error: writeError } = useWriteContract()
+  const {
+    data: hash,
+    writeContract,
+    isPending,
+    error: writeError,
+    reset,
+  } = useWriteContract()
   const {
     isLoading: isConfirming,
     isSuccess,
@@ -50,12 +56,16 @@ export function useVotingWrite() {
   async function write<F extends VotingFunction>(
     functionName: F,
     args: VotingArgs<F>,
-    /** shown once the transaction is mined; captured now, since the caller's
-     *  inputs are usually cleared on submit */
+    /** shown once the transaction is mined; passed in rather than built at
+     *  render time, since the caller's inputs are cleared on submit */
     successMessage?: string,
   ) {
+    // clear the previous transaction first: isSuccess and the receipt still
+    // describe it until writeContract produces a new hash, so anything shown
+    // before that point would be about the wrong transaction
+    reset()
     setSimulationError(null)
-    setSuccess(successMessage)
+    setSuccess(undefined)
     if (!client || !address || !votingAddress) return
 
     const params = {
@@ -71,6 +81,8 @@ export function useVotingWrite() {
       setSimulationError(error as Error)
       return
     }
+    // only now is the message about a transaction that is actually being sent
+    setSuccess(successMessage)
     writeContract(params as never)
   }
 
