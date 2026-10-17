@@ -61,12 +61,7 @@ export function ProposalList({
         <ul className="list-disc pl-5">
           {proposals.map((proposal) => (
             <li key={String(proposal.id)} className="flex items-center gap-2 py-1">
-              <span>
-                {proposal.description}{' '}
-                <span className="text-muted-foreground">
-                  — {String(proposal.voteCount)} vote(s)
-                </span>
-              </span>
+              <span>{proposal.description}</span>
               {canVote && <VoteButton proposalId={proposal.id} />}
             </li>
           ))}
