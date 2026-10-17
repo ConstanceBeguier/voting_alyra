@@ -27,28 +27,24 @@ function describe(error: Error) {
 
 export function TransactionAlert({ tx }: { tx: TxState }) {
   if (tx.error) {
-    const message = describe(tx.error)
-
     return (
-      <Alert variant="destructive">
+      <Alert variant="destructive" className="border-destructive/30 bg-destructive/[0.07] motion-safe:animate-rise">
         <CircleAlert />
-        <AlertTitle>Transaction failed</AlertTitle>
-        <AlertDescription>{message}</AlertDescription>
+        <AlertTitle>That didn&rsquo;t go through</AlertTitle>
+        <AlertDescription>{describe(tx.error)}</AlertDescription>
       </Alert>
     )
   }
 
   if (tx.isPending || tx.isConfirming) {
     return (
-      <Alert>
-        <Loader2 className="animate-spin" />
-        <AlertTitle>
-          {tx.isPending ? 'Waiting for your signature' : 'Transaction in progress'}
-        </AlertTitle>
+      <Alert className="relative overflow-hidden border-brand/25 bg-brand/[0.06] motion-safe:animate-rise">
+        {/* a light sweep while we wait on the wallet or the chain */}
+        <div className="pointer-events-none absolute inset-0 bg-linear-to-r from-transparent via-white/[0.06] to-transparent motion-safe:animate-shimmer" />
+        <Loader2 className="animate-spin text-brand" />
+        <AlertTitle>{tx.isPending ? 'Waiting for your signature' : 'Writing it on-chain…'}</AlertTitle>
         <AlertDescription>
-          {tx.isPending
-            ? 'Confirm the transaction in your wallet.'
-            : 'Waiting for the transaction to be mined.'}
+          {tx.isPending ? 'Confirm the transaction in your wallet.' : 'This usually takes a few seconds.'}
         </AlertDescription>
       </Alert>
     )
@@ -56,9 +52,9 @@ export function TransactionAlert({ tx }: { tx: TxState }) {
 
   if (tx.isSuccess) {
     return (
-      <Alert>
-        <CircleCheck />
-        <AlertTitle>Transaction confirmed</AlertTitle>
+      <Alert className="border-emerald-400/30 bg-emerald-400/[0.07] motion-safe:animate-rise">
+        <CircleCheck className="text-emerald-400 motion-safe:animate-pop" />
+        <AlertTitle>Done!</AlertTitle>
         {tx.success && <AlertDescription>{tx.success}</AlertDescription>}
       </Alert>
     )

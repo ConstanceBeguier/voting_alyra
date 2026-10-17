@@ -10,6 +10,8 @@ import { VoteButton } from '@/components/VoteButton'
 import { useWatchProposals } from '@/hooks/useVotingEvents'
 import { ListError } from '@/components/ListError'
 import { WorkflowStatus } from '@/lib/workflow'
+import { cn } from 'cn'
+import { Check, Lightbulb } from 'lucide-react'
 
 /**
  * A description is written once and never changes, so it is cacheable. Keyed by
@@ -21,9 +23,11 @@ const descriptions = new Map<string, string>()
 export function ProposalList({
   status,
   hasVoted,
+  votedProposalId,
 }: {
   status: number | undefined
   hasVoted: boolean
+  votedProposalId: bigint | undefined
 }) {
   const { address } = useAccount()
   const chainId = useChainId()
@@ -78,21 +82,58 @@ export function ProposalList({
   const canVote = status === WorkflowStatus.VotingSessionStarted && !hasVoted
 
   return (
-    <div className="flex flex-col items-start gap-2">
-      <h3 className="font-medium">Proposals</h3>
+    <div className="flex flex-col gap-3">
+      <div className="flex items-baseline justify-between">
+        <h3 className="eyebrow">Proposals</h3>
+        <span className="text-xs text-muted-foreground tabular-nums">{proposals?.length ?? 0}</span>
+      </div>
+
       {proposals?.length ? (
-        <ul className="list-disc pl-5">
-          {proposals.map((proposal) => (
-            <li key={String(proposal.id)} className="py-1">
-              <div className="flex items-center gap-2">
-                <span>{proposal.description}</span>
+        <ul className="grid gap-3 sm:grid-cols-2">
+          {proposals.map((proposal, index) => {
+            const mine = votedProposalId === proposal.id
+            // the contract always registers the blank vote first
+            const blank = proposal.id === 0n
+
+            return (
+              <li
+                key={String(proposal.id)}
+                style={{ animationDelay: `${index * 60}ms` }}
+                className={cn(
+                  'group flex flex-wrap items-center gap-3 rounded-xl border p-4 transition-all duration-300 motion-safe:animate-rise',
+                  mine
+                    ? 'border-voter/60 bg-voter/10 shadow-[0_0_40px_-12px_var(--voter)]'
+                    : 'border-white/8 bg-white/[0.02] hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.05]',
+                  blank && !mine && 'border-dashed',
+                  hasVoted && !mine && 'opacity-55',
+                )}
+              >
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white/5 font-mono text-xs text-muted-foreground">
+                  {blank ? '∅' : `#${proposal.id}`}
+                </span>
+                {blank ? (
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-medium">Blank vote</span>
+                    <span className="block text-xs text-muted-foreground">No preference — wins only with a strict majority</span>
+                  </span>
+                ) : (
+                  <span className="min-w-0 flex-1 truncate font-medium">{proposal.description}</span>
+                )}
+                {mine && (
+                  <span className="flex items-center gap-1 rounded-full bg-voter px-2.5 py-1 text-xs font-semibold text-background motion-safe:animate-pop">
+                    <Check className="size-3.5" /> Your vote
+                  </span>
+                )}
                 {canVote && <VoteButton proposalId={proposal.id} />}
-              </div>
-            </li>
-          ))}
+              </li>
+            )
+          })}
         </ul>
       ) : (
-        <p className="text-muted-foreground">No proposal yet.</p>
+        <div className="flex items-center gap-3 rounded-xl border border-dashed border-white/10 px-5 py-8 text-sm text-muted-foreground">
+          <Lightbulb className="size-5 shrink-0 text-voter" />
+          Nothing proposed yet — yours could be the first.
+        </div>
       )}
     </div>
   )

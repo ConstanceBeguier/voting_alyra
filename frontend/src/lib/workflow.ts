@@ -22,3 +22,13 @@ export const WORKFLOW_LABELS = [
   'Voting session ended',
   'Votes tallied',
 ] as const
+
+/** One word per phase, for the stepper. Same order. */
+export const WORKFLOW_SHORT_LABELS = [
+  'Registration',
+  'Proposals',
+  'Review',
+  'Voting',
+  'Counting',
+  'Results',
+] as const

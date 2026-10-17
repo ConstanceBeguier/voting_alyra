@@ -4,6 +4,8 @@ import { votingAbi, getVotingAddress } from '@/contracts/voting'
 import { revertedError } from '@/lib/revert'
 import { AddProposal } from '@/components/AddProposal'
 import { ProposalList } from '@/components/ProposalList'
+import { RolePanel } from '@/components/RolePanel'
+import { UserCheck } from 'lucide-react'
 
 /** Everything only a registered voter may see. Renders nothing for anyone else. */
 export function Voter({ status }: { status: number | undefined }) {
@@ -29,15 +31,23 @@ export function Voter({ status }: { status: number | undefined }) {
   if (!voter?.isRegistered) return null
 
   return (
-    <section className="flex flex-col items-start gap-3">
-      <h2 className="text-lg font-semibold">Voter</h2>
-      <p>
-        {voter.hasVoted
-          ? `You voted for proposal #${voter.votedProposalId}`
-          : 'You have not voted yet'}
-      </p>
+    <RolePanel
+      accent="voter"
+      icon={<UserCheck className="size-5.5" />}
+      title="Your ballot"
+      subtitle={
+        voter.hasVoted
+          ? 'Your vote is in — thank you for taking part.'
+          : 'Submit ideas, then choose the one you believe in.'
+      }
+      badge="Registered voter"
+    >
       <AddProposal status={status} />
-      <ProposalList status={status} hasVoted={voter.hasVoted} />
-    </section>
+      <ProposalList
+        status={status}
+        hasVoted={voter.hasVoted}
+        votedProposalId={voter.hasVoted ? voter.votedProposalId : undefined}
+      />
+    </RolePanel>
   )
 }

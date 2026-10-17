@@ -8,6 +8,8 @@ import {
 } from '@/contracts/voting'
 import { useWatchVoters } from '@/hooks/useVotingEvents'
 import { ListError } from '@/components/ListError'
+import { UserPlus } from 'lucide-react'
+import { Avatar } from '@/components/Avatar'
 
 export function VoterList() {
   const chainId = useChainId()
@@ -39,16 +41,31 @@ export function VoterList() {
   if (error) return <ListError what="voters" error={error} />
 
   return (
-    <div className="flex flex-col items-start gap-2">
-      <h3 className="font-medium">Registered voters ({voters?.length ?? 0})</h3>
+    <div className="flex flex-col gap-3">
+      <div className="flex items-baseline justify-between">
+        <h3 className="eyebrow">Registered voters</h3>
+        <span className="text-xs text-muted-foreground tabular-nums">{voters?.length ?? 0}</span>
+      </div>
       {voters?.length ? (
-        <ul className="list-disc pl-5 font-mono text-sm">
-          {voters.map((voter) => (
-            <li key={voter}>{voter}</li>
+        <ul className="grid gap-2 sm:grid-cols-2">
+          {voters.map((voter, index) => (
+            <li
+              key={voter}
+              style={{ animationDelay: `${index * 50}ms` }}
+              className="flex items-center gap-3 rounded-xl border border-white/8 bg-white/[0.02] px-3.5 py-2.5 transition-colors hover:border-white/15 hover:bg-white/[0.05] motion-safe:animate-rise"
+            >
+              <Avatar address={voter} />
+              <span className="truncate font-mono text-sm">
+                {voter.slice(0, 6)}…{voter.slice(-4)}
+              </span>
+            </li>
           ))}
         </ul>
       ) : (
-        <p className="text-muted-foreground">No voter registered yet.</p>
+        <div className="flex items-center gap-3 rounded-xl border border-dashed border-white/10 px-5 py-8 text-sm text-muted-foreground">
+          <UserPlus className="size-5 shrink-0 text-admin" />
+          No voters yet — add the first address above.
+        </div>
       )}
     </div>
   )

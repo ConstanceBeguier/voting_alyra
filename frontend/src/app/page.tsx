@@ -3,8 +3,9 @@ import { useCallback } from 'react'
 import { useChainId, useReadContract } from 'wagmi'
 import { votingAbi, getVotingAddress } from '@/contracts/voting'
 import { useWatchWorkflowStatus } from '@/hooks/useVotingEvents'
+import { Hero } from '@/components/Hero'
 import { ConnectPrompt } from '@/components/ConnectPrompt'
-import { WorkflowStatus } from '@/components/WorkflowStatus'
+import { PhaseStepper } from '@/components/PhaseStepper'
 import { Owner } from '@/components/Owner'
 import { Voter } from '@/components/Voter'
 import { Winner } from '@/components/Winner'
@@ -28,10 +29,11 @@ export default function Home() {
   useWatchWorkflowStatus(votingAddress, onStatusChanged);
 
   return (
-    <div className="flex flex-col items-start gap-3">
+    <div className="flex flex-col gap-8">
+      <Hero />
       <ConnectPrompt />
-      <WorkflowStatus status={status} />
       <Winner status={status} />
+      <PhaseStepper status={status} />
       <Owner status={status} />
       <Voter status={status} />
     </div>

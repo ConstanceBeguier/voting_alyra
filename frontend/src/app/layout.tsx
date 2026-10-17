@@ -5,6 +5,7 @@ import "./globals.css";
 import ContextProvider from "@/context";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { Aurora } from "@/components/Aurora";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,12 +29,13 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`dark ${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="relative min-h-full flex flex-col bg-background font-sans text-foreground">
+        <Aurora />
         <ContextProvider cookies={cookies}>
           <Header />
-          <main className="flex-1 px-6 py-8">{children}</main>
+          <main className="mx-auto w-full max-w-5xl flex-1 px-6 py-12">{children}</main>
           <Footer />
         </ContextProvider>
       </body>

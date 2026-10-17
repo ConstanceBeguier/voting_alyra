@@ -1,7 +1,7 @@
 'use client'
 import { useAccount } from 'wagmi'
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
 import { Wallet } from 'lucide-react'
+import { ConnectButton } from '@/components/ConnectButton'
 
 export function ConnectPrompt() {
   const { isConnected } = useAccount()
@@ -9,12 +9,15 @@ export function ConnectPrompt() {
   if (isConnected) return null
 
   return (
-    <Alert>
-      <Wallet />
-      <AlertTitle>No wallet connected</AlertTitle>
-      <AlertDescription>
-        Connect your wallet to take part in the vote.
-      </AlertDescription>
-    </Alert>
+    <section className="glass mx-auto flex w-full max-w-xl flex-col items-center gap-4 rounded-2xl p-6 text-center motion-safe:animate-rise sm:flex-row sm:text-left">
+      <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-brand-gradient text-white shadow-[0_0_30px_-6px_var(--brand)]">
+        <Wallet className="size-6" />
+      </span>
+      <div className="flex-1">
+        <p className="font-medium">Ready to take part?</p>
+        <p className="text-sm text-muted-foreground">Connect your wallet — it only takes a moment.</p>
+      </div>
+      <ConnectButton />
+    </section>
   )
 }

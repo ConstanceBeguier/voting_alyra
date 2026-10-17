@@ -17,9 +17,10 @@ export function AddProposal({ status }: { status: number | undefined }) {
   const valid = description.trim().length > 0
 
   return (
-    <div className="flex w-full max-w-md flex-col gap-2">
+    <div className="flex w-full flex-col gap-2">
+      <h3 className="eyebrow">Submit a proposal</h3>
       <form
-        className="flex w-full max-w-md items-center gap-2"
+        className="flex w-full items-center gap-2"
         onSubmit={async (event) => {
           event.preventDefault()
           if (!valid) return
@@ -33,8 +34,9 @@ export function AddProposal({ status }: { status: number | undefined }) {
           placeholder="Describe your proposal"
           aria-label="Proposal description"
           disabled={busy}
+          className="h-11 border-white/10 bg-white/[0.03] px-3.5"
         />
-        <Button type="submit" disabled={!valid || busy}>
+        <Button type="submit" variant="brand" size="lg" className="h-11 px-5" disabled={!valid || busy}>
           {busy ? <Loader2 className="animate-spin" /> : <Plus />}
           {busy ? 'Confirming…' : 'Add proposal'}
         </Button>

@@ -17,6 +17,7 @@
     "@x402/evm": "^2.28.0",
     "@x402/extensions": "^2.28.0",
     "@x402/svm": "^2.28.0",
+    "canvas-confetti": "^1.9.4",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.4.0",
     "lucide-react": "^1.55.0",
@@ -30,6 +31,7 @@
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "^4",
+    "@types/canvas-confetti": "^1.9.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

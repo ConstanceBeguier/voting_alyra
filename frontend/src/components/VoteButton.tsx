@@ -2,7 +2,7 @@
 import { useVotingWrite } from '@/hooks/useVotingWrite'
 import { TransactionAlert } from '@/components/TransactionAlert'
 import { Button } from '@/components/ui/button'
-import { Check, Loader2 } from 'lucide-react'
+import { Loader2, Vote } from 'lucide-react'
 
 export function VoteButton({ proposalId }: { proposalId: bigint }) {
   const { votingAddress, busy, write, tx } = useVotingWrite()
@@ -10,19 +10,22 @@ export function VoteButton({ proposalId }: { proposalId: bigint }) {
   if (!votingAddress) return null
 
   return (
-    <div className="flex flex-col items-start gap-2">
+    <>
       <Button
         size="sm"
-        variant="outline"
+        variant="brand"
         disabled={busy}
         onClick={() =>
           write('setVote', [proposalId], `Your vote for proposal #${proposalId} has been recorded.`)
         }
       >
-        {busy ? <Loader2 className="animate-spin" /> : <Check />}
+        {busy ? <Loader2 className="animate-spin" /> : <Vote />}
         {busy ? 'Confirming…' : 'Vote'}
       </Button>
-      <TransactionAlert tx={tx} />
-    </div>
+      {/* full width, so a message wraps under the card instead of squeezing it */}
+      <div className="basis-full empty:hidden">
+        <TransactionAlert tx={tx} />
+      </div>
+    </>
   )
 }

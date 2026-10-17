@@ -10,6 +10,7 @@ import {
 } from 'wagmi'
 import type { ContractFunctionArgs, ContractFunctionName } from 'viem'
 import { votingAbi, getVotingAddress } from '@/contracts/voting'
+import { celebrate } from '@/lib/celebrate'
 
 type Mutability = 'nonpayable' | 'payable'
 type VotingFunction = ContractFunctionName<typeof votingAbi, Mutability>
@@ -43,7 +44,9 @@ export function useVotingWrite() {
   } = useWaitForTransactionReceipt({ hash })
 
   useEffect(() => {
-    if (isSuccess) queryClient.invalidateQueries()
+    if (!isSuccess) return
+    queryClient.invalidateQueries()
+    celebrate()
   }, [isSuccess, queryClient])
 
   /**

@@ -23,12 +23,15 @@ createAppKit({
   projectId,
   networks,
   metadata,
-  themeMode: 'light',
+  themeMode: 'dark',
   features: {
     analytics: false
   },
   themeVariables: {
-    '--w3m-accent': '#000000',
+    '--w3m-accent': '#8b5cf6',
+    '--w3m-color-mix': '#8b5cf6',
+    '--w3m-color-mix-strength': 8,
+    '--w3m-border-radius-master': '3px',
   }
 })
 
