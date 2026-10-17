@@ -1,19 +1,18 @@
 'use client'
 import { useState } from 'react'
 import { useVotingWrite } from '@/hooks/useVotingWrite'
+import { WorkflowStatus } from '@/lib/workflow'
 import { TransactionAlert } from '@/components/TransactionAlert'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Loader2, Plus } from 'lucide-react'
-
-const PROPOSALS_REGISTRATION_STARTED = 1
 
 export function AddProposal({ status }: { status: number | undefined }) {
   const { votingAddress, busy, write, tx } = useVotingWrite()
   const [description, setDescription] = useState('')
 
   // proposals are only accepted during that one phase
-  if (status !== PROPOSALS_REGISTRATION_STARTED || !votingAddress) return null
+  if (status !== WorkflowStatus.ProposalsRegistrationStarted || !votingAddress) return null
 
   // the contract rejects an empty description, so do not pay for a revert
   const valid = description.trim().length > 0

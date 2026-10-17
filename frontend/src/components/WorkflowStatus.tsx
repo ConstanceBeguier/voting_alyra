@@ -1,18 +1,11 @@
-const LABELS = [
-  'Registering voters',
-  'Proposals registration started',
-  'Proposals registration ended',
-  'Voting session started',
-  'Voting session ended',
-  'Votes tallied',
-] as const
+import { WORKFLOW_LABELS } from '@/lib/workflow'
 
 export function WorkflowStatus({ status }: { status: number | undefined }) {
   if (status === undefined) return null
 
   return (
     <p>
-      Current phase: <strong>{LABELS[status]}</strong>
+      Current phase: <strong>{WORKFLOW_LABELS[status]}</strong>
     </p>
   )
 }

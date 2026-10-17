@@ -2,19 +2,18 @@
 import { useState } from 'react'
 import { isAddress } from 'viem'
 import { useVotingWrite } from '@/hooks/useVotingWrite'
+import { WorkflowStatus } from '@/lib/workflow'
 import { TransactionAlert } from '@/components/TransactionAlert'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Loader2, UserPlus } from 'lucide-react'
-
-const REGISTERING_VOTERS = 0
 
 export function AddVoter({ status }: { status: number | undefined }) {
   const { votingAddress, busy, write, tx } = useVotingWrite()
   const [value, setValue] = useState('')
 
   // voters can only be registered during the first phase
-  if (status !== REGISTERING_VOTERS || !votingAddress) return null
+  if (status !== WorkflowStatus.RegisteringVoters || !votingAddress) return null
 
   // checked here so a malformed address never costs a reverted transaction
   const valid = isAddress(value)

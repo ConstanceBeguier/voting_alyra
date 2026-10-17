@@ -5,8 +5,7 @@ import { votingAbi, getVotingAddress } from '@/contracts/voting'
 import { VoteButton } from '@/components/VoteButton'
 import { useWatchProposals } from '@/hooks/useVotingEvents'
 import { ListError } from '@/components/ListError'
-
-const VOTING_SESSION_STARTED = 3
+import { WorkflowStatus } from '@/lib/workflow'
 
 /**
  * A proposal's description is written once and never changes, so it is worth
@@ -69,7 +68,7 @@ export function ProposalList({
   if (error) return <ListError what="proposals" error={error} />
 
   // one vote per voter, only while the session is open
-  const canVote = status === VOTING_SESSION_STARTED && !hasVoted
+  const canVote = status === WorkflowStatus.VotingSessionStarted && !hasVoted
 
   return (
     <div className="flex flex-col items-start gap-2">
