@@ -18,7 +18,7 @@ export function Voter({ status }: { status: number | undefined }) {
     functionName: 'getVoter',
     args: address ? [address] : undefined,
     account: address,
-    query: { enabled: Boolean(address && votingAddress) },
+    query: { enabled: Boolean(address && votingAddress), retry: false },
   })
 
   if (!voter?.isRegistered) return null
