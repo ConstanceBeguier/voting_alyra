@@ -159,7 +159,8 @@ export function ProposalList({
       ) : (
         <div className="flex items-center gap-3 rounded-xl border border-dashed border-white/10 px-5 py-8 text-sm text-muted-foreground">
           <Lightbulb className="size-5 shrink-0 text-voter" />
-          Nothing proposed yet — yours could be the first.
+          {/* the blank vote is registered as proposals open, so empty means not yet open */}
+          Proposals open once voter registration ends.
         </div>
       )}
     </div>
