@@ -139,7 +139,11 @@ export function ProposalList({
                     disabled={busy}
                     onClick={() => {
                       setChoice(proposal.id)
-                      write('setVote', [proposal.id], `Your vote for proposal #${proposal.id} has been recorded.`)
+                      write(
+                        'setVote',
+                        [proposal.id],
+                        blank ? 'Your blank vote has been recorded.' : `Your vote for proposal #${proposal.id} has been recorded.`,
+                      )
                     }}
                   >
                     {busy && chosen ? <Loader2 className="animate-spin" /> : <Vote />}
