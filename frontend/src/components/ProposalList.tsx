@@ -35,9 +35,6 @@ export function ProposalList({
 
       const ids = logs.map((log) => log.args.proposalId!)
 
-      // getOneProposal is onlyVoters: each call must run as the connected
-      // address, which rules out a multicall batch (msg.sender would be
-      // Multicall3 and every call would revert)
       return Promise.all(
         ids.map(async (id) => {
           const proposal = await client!.readContract({
@@ -64,9 +61,11 @@ export function ProposalList({
       {proposals?.length ? (
         <ul className="list-disc pl-5">
           {proposals.map((proposal) => (
-            <li key={String(proposal.id)} className="flex items-center gap-2 py-1">
-              <span>{proposal.description}</span>
-              {canVote && <VoteButton proposalId={proposal.id} />}
+            <li key={String(proposal.id)} className="py-1">
+              <div className="flex items-center gap-2">
+                <span>{proposal.description}</span>
+                {canVote && <VoteButton proposalId={proposal.id} />}
+              </div>
             </li>
           ))}
         </ul>
