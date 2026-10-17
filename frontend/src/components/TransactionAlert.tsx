@@ -1,5 +1,6 @@
 'use client'
-import { BaseError, ContractFunctionRevertedError } from 'viem'
+import { BaseError } from 'viem'
+import { revertedError } from '@/lib/revert'
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
 import { CircleAlert, CircleCheck, Loader2 } from 'lucide-react'
 
@@ -26,11 +27,8 @@ function describe(error: Error) {
   if (!(error instanceof BaseError)) return error.message
 
   // a reverted call carries the decoded custom error somewhere in its causes
-  const reverted = error.walk((e) => e instanceof ContractFunctionRevertedError)
-  if (reverted instanceof ContractFunctionRevertedError) {
-    const name = reverted.data?.errorName
-    if (name) return REASONS[name] ?? name
-  }
+  const name = revertedError(error)?.data?.errorName
+  if (name) return REASONS[name] ?? name
 
   // otherwise the one readable line, e.g. "User rejected the request."
   return error.shortMessage

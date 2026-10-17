@@ -1,6 +1,7 @@
 'use client'
 import { useAccount, useChainId, useReadContract } from 'wagmi'
 import { votingAbi, getVotingAddress } from '@/contracts/voting'
+import { revertedError } from '@/lib/revert'
 import { AddProposal } from '@/components/AddProposal'
 import { ProposalList } from '@/components/ProposalList'
 
@@ -19,7 +20,13 @@ export function Voter({ status }: { status: number | undefined }) {
     functionName: 'getVoter',
     args: address ? [address] : undefined,
     account: address,
-    query: { enabled: Boolean(address && votingAddress), retry: false },
+    query: {
+      enabled: Boolean(address && votingAddress),
+      // a revert is the answer here, not an incident: retrying it would just
+      // mean four failing calls for every non-voter. A transient network
+      // failure still deserves another go.
+      retry: (failureCount, error) => !revertedError(error) && failureCount < 3,
+    },
   })
 
   if (!voter?.isRegistered) return null
