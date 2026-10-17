@@ -8,6 +8,12 @@ import { ListError } from '@/components/ListError'
 
 const VOTING_SESSION_STARTED = 3
 
+/**
+ * A proposal's description is written once and never changes, so it is worth
+ * remembering: without this, every new proposal re-read all the previous ones.
+ */
+const descriptions = new Map<string, string>()
+
 export function ProposalList({
   status,
   hasVoted,
@@ -38,14 +44,22 @@ export function ProposalList({
 
       return Promise.all(
         ids.map(async (id) => {
-          const proposal = await client!.readContract({
-            address: votingAddress!,
-            abi: votingAbi,
-            functionName: 'getOneProposal',
-            args: [id],
-            account: address,
-          })
-          return { id, ...proposal }
+          const key = `${votingAddress}:${id}`
+          let description = descriptions.get(key)
+
+          if (description === undefined) {
+            const proposal = await client!.readContract({
+              address: votingAddress!,
+              abi: votingAbi,
+              functionName: 'getOneProposal',
+              args: [id],
+              account: address,
+            })
+            description = proposal.description
+            descriptions.set(key, description)
+          }
+
+          return { id, description }
         }),
       )
     },
