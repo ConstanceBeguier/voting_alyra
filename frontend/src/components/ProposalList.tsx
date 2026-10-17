@@ -40,7 +40,7 @@ export function ProposalList({
       // guaranteed by `enabled` above; asserted so the rest reads cleanly
       if (!client || !votingAddress || !address) throw new Error('Not ready')
 
-      // the event only carries the id, so the whole history gives us the ids
+      // the event only carries the id
       const logs = await client.getContractEvents({
         address: votingAddress,
         abi: votingAbi,

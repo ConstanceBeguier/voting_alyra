@@ -17,7 +17,8 @@ const metadata = {
   icons: []
 }
 
-export const modal = createAppKit({
+// registers the <appkit-*> elements; the returned handle is unused
+createAppKit({
   adapters: [wagmiAdapter],
   projectId,
   networks,
