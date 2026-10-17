@@ -14,7 +14,6 @@ export function AddVoter({ status }: { status: number | undefined }) {
 
   if (status !== WorkflowStatus.RegisteringVoters || !votingAddress) return null
 
-  // checked here so a malformed address never costs a reverted transaction
   const valid = isAddress(value)
 
   return (

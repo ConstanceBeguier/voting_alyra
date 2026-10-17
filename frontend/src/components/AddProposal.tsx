@@ -13,7 +13,7 @@ export function AddProposal({ status }: { status: number | undefined }) {
 
   if (status !== WorkflowStatus.ProposalsRegistrationStarted || !votingAddress) return null
 
-  // the contract rejects an empty description, so do not pay for a revert
+  // stricter than the contract, which accepts a whitespace-only description
   const valid = description.trim().length > 0
 
   return (
