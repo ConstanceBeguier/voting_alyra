@@ -1,7 +1,11 @@
 'use client'
 import { useQuery } from '@tanstack/react-query'
 import { useChainId, usePublicClient } from 'wagmi'
-import { votingAbi, getVotingAddress } from '@/contracts/voting'
+import {
+  votingAbi,
+  getVotingAddress,
+  getVotingDeployBlock,
+} from '@/contracts/voting'
 import { useWatchVoters } from '@/hooks/useVotingEvents'
 import { ListError } from '@/components/ListError'
 
@@ -9,6 +13,7 @@ export function VoterList() {
   const chainId = useChainId()
   const votingAddress = getVotingAddress(chainId)
   const client = usePublicClient()
+  const fromBlock = getVotingDeployBlock(chainId)
 
   useWatchVoters(votingAddress)
 
@@ -24,7 +29,7 @@ export function VoterList() {
         address: votingAddress,
         abi: votingAbi,
         eventName: 'VoterRegistered',
-        fromBlock: 0n,
+        fromBlock,
       })
       return logs.map((log) => log.args.voterAddress!)
     },
