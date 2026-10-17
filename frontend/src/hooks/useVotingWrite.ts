@@ -54,6 +54,9 @@ export function useVotingWrite() {
    * Simulate before sending. A write that would revert is otherwise rejected
    * for an unrelated gas reason, hiding the contract's own error; an eth_call
    * carries it back intact and decodable.
+   *
+   * Returns whether the transaction was handed to the wallet, so a form can
+   * keep the user's input when the simulation rejected it.
    */
   async function write<F extends VotingFunction>(
     functionName: F,
@@ -68,7 +71,7 @@ export function useVotingWrite() {
     reset()
     setSimulationError(null)
     setSuccess(undefined)
-    if (!client || !address || !votingAddress) return
+    if (!client || !address || !votingAddress) return false
 
     const params = {
       address: votingAddress,
@@ -81,11 +84,12 @@ export function useVotingWrite() {
       await client.simulateContract({ ...params, account: address } as never)
     } catch (error) {
       setSimulationError(error as Error)
-      return
+      return false
     }
     // only now is the message about a transaction that is actually being sent
     setSuccess(successMessage)
     writeContract(params as never)
+    return true
   }
 
   return {

@@ -23,11 +23,11 @@ export function AddVoter({ status }: { status: number | undefined }) {
     <div className="flex w-full max-w-md flex-col gap-2">
       <form
         className="flex w-full max-w-md items-center gap-2"
-        onSubmit={(event) => {
+        onSubmit={async (event) => {
           event.preventDefault()
           if (!valid) return
-          write('addVoter', [value], `The voter ${value} is registered.`)
-          setValue('')
+          // keep what was typed if the simulation rejected it
+          if (await write('addVoter', [value], `The voter ${value} is registered.`)) setValue('')
         }}
       >
         <Input

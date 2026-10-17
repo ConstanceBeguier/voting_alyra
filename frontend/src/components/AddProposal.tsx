@@ -22,11 +22,11 @@ export function AddProposal({ status }: { status: number | undefined }) {
     <div className="flex w-full max-w-md flex-col gap-2">
       <form
         className="flex w-full max-w-md items-center gap-2"
-        onSubmit={(event) => {
+        onSubmit={async (event) => {
           event.preventDefault()
           if (!valid) return
-          write('addProposal', [description.trim()], `Your proposal "${description.trim()}" has been added.`)
-          setDescription('')
+          // keep what was typed if the simulation rejected it
+          if (await write('addProposal', [description.trim()], `Your proposal "${description.trim()}" has been added.`)) setDescription('')
         }}
       >
         <Input
