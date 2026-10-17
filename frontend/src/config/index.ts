@@ -9,16 +9,14 @@ if (!envProjectId) {
   throw new Error('NEXT_PUBLIC_PROJECT_ID is not set — see .env.example')
 }
 
-// re-exported through a narrowed const: the check above does not narrow the
-// type across module boundaries
+// narrowing does not cross module boundaries, hence the re-export
 export const projectId: string = envProjectId
 
 // must match the networks declared in backend/hardhat.config.ts
 const supported = [sepolia, hardhat] as const
 
-// The first network is the default: it is what useChainId reports before a
-// wallet is connected, and what AppKit offers first. Pick it by chain id
-// rather than by editing the order here.
+// The first network is the default: what useChainId reports before a wallet
+// is connected, and what AppKit offers first.
 const defaultChainId = Number(process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID ?? sepolia.id)
 const preferred = supported.find((network) => network.id === defaultChainId)
 
@@ -34,7 +32,6 @@ export const networks = [
   ...supported.filter((network) => network !== preferred),
 ] as [AppKitNetwork, ...AppKitNetwork[]]
 
-//Set up the Wagmi Adapter (Config)
 export const wagmiAdapter = new WagmiAdapter({
   ssr: true,
   projectId,

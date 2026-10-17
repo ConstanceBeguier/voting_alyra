@@ -6,11 +6,10 @@ import { createAppKit } from '@reown/appkit/react'
 import React, { type ReactNode } from 'react'
 import { cookieToInitialState, WagmiProvider, type Config } from 'wagmi'
 
-// Set up queryClient
 const queryClient = new QueryClient()
 
-// shown by the wallet when the user connects; url must match the origin the
-// app is served from, otherwise WalletConnect rejects the session
+// url must match the origin the app is served from, or WalletConnect rejects
+// the session
 const metadata = {
   name: 'Voting',
   description: 'On-chain voting dApp',
@@ -18,7 +17,6 @@ const metadata = {
   icons: []
 }
 
-// Create the modal
 export const modal = createAppKit({
   adapters: [wagmiAdapter],
   projectId,

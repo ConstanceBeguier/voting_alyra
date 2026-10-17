@@ -12,7 +12,6 @@ export function AddVoter({ status }: { status: number | undefined }) {
   const { votingAddress, busy, write, tx } = useVotingWrite()
   const [value, setValue] = useState('')
 
-  // voters can only be registered during the first phase
   if (status !== WorkflowStatus.RegisteringVoters || !votingAddress) return null
 
   // checked here so a malformed address never costs a reverted transaction

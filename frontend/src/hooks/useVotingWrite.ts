@@ -19,11 +19,7 @@ type VotingArgs<F extends VotingFunction> = ContractFunctionArgs<
   F
 >
 
-/**
- * Shared plumbing for every write on the Voting contract: a `busy` flag while
- * the transaction is in flight, a cache invalidation once it is mined — reads
- * never refresh on their own — and the transaction state the alert needs.
- */
+/** Every write on the Voting contract: state, simulation, cache invalidation. */
 export function useVotingWrite() {
   const { address } = useAccount()
   const chainId = useChainId()
@@ -51,23 +47,16 @@ export function useVotingWrite() {
   }, [isSuccess, queryClient])
 
   /**
-   * Simulate before sending. A write that would revert is otherwise rejected
-   * for an unrelated gas reason, hiding the contract's own error; an eth_call
-   * carries it back intact and decodable.
-   *
-   * Returns whether the transaction was handed to the wallet, so a form can
-   * keep the user's input when the simulation rejected it.
+   * Simulates first: sending straight away loses the revert reason behind an
+   * unrelated gas error. Returns whether the transaction reached the wallet.
    */
   async function write<F extends VotingFunction>(
     functionName: F,
     args: VotingArgs<F>,
-    /** shown once the transaction is mined; passed in rather than built at
-     *  render time, since the caller's inputs are cleared on submit */
+    /** passed in, not built at render time: forms clear their input */
     successMessage?: string,
   ) {
-    // clear the previous transaction first: isSuccess and the receipt still
-    // describe it until writeContract produces a new hash, so anything shown
-    // before that point would be about the wrong transaction
+    // isSuccess still describes the previous transaction until a new hash
     reset()
     setSimulationError(null)
     setSuccess(undefined)
@@ -81,16 +70,13 @@ export function useVotingWrite() {
     } as const
 
     try {
-      // `as never`: viem resolves its parameter type from a *literal*
-      // functionName, and ours is the generic F. The object is correct — the
-      // call sites are checked against the ABI by `write`'s own signature —
-      // but the compiler cannot see it through the generic.
+      // `as never`: viem needs a literal functionName, ours is generic. Call
+      // sites stay checked by write's own signature.
       await client.simulateContract({ ...params, account: address } as never)
     } catch (error) {
       setSimulationError(error as Error)
       return false
     }
-    // only now is the message about a transaction that is actually being sent
     setSuccess(successMessage)
     writeContract(params as never) // same reason as the cast above
     return true
@@ -110,5 +96,5 @@ export function useVotingWrite() {
   }
 }
 
-/** What <TransactionAlert /> needs; derived so it cannot drift from the hook. */
+/** Derived, so it cannot drift from the hook. */
 export type TxState = ReturnType<typeof useVotingWrite>['tx']

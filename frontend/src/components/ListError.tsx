@@ -3,10 +3,7 @@ import { BaseError } from 'viem'
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
 import { CircleAlert } from 'lucide-react'
 
-/**
- * A failed query leaves `data` undefined, which reads exactly like an empty
- * list — so a broken RPC would silently claim there is nothing to show.
- */
+/** A failed query leaves `data` undefined, which reads like an empty list. */
 export function ListError({ what, error }: { what: string; error: Error }) {
   const message = error instanceof BaseError ? error.shortMessage : error.message
 

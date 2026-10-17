@@ -5,7 +5,6 @@ import type { TxState } from '@/hooks/useVotingWrite'
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
 import { CircleAlert, CircleCheck, Loader2 } from 'lucide-react'
 
-// the contract's custom errors, in plain words
 const REASONS: Record<string, string> = {
   AlreadyRegistered: 'This address is already a registered voter.',
   NotAVoter: 'This account is not a registered voter.',
@@ -19,7 +18,6 @@ const REASONS: Record<string, string> = {
 function describe(error: Error) {
   if (!(error instanceof BaseError)) return error.message
 
-  // a reverted call carries the decoded custom error somewhere in its causes
   const name = revertedError(error)?.data?.errorName
   if (name) return REASONS[name] ?? name
 

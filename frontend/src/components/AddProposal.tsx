@@ -11,7 +11,6 @@ export function AddProposal({ status }: { status: number | undefined }) {
   const { votingAddress, busy, write, tx } = useVotingWrite()
   const [description, setDescription] = useState('')
 
-  // proposals are only accepted during that one phase
   if (status !== WorkflowStatus.ProposalsRegistrationStarted || !votingAddress) return null
 
   // the contract rejects an empty description, so do not pay for a revert

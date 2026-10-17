@@ -31,7 +31,6 @@ const NEXT_STEP = [
 export function NextStepButton({ status }: { status: number | undefined }) {
   const { votingAddress, busy, write, tx } = useVotingWrite()
 
-  // the owner check lives in <Owner />
   if (!votingAddress || status === undefined) return null
 
   const step = NEXT_STEP[status]

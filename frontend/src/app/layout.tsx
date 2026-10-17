@@ -22,8 +22,7 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
-  // wagmi rehydrates its state from the cookie, so the server and the client
-  // start from the same connection state
+  // wagmi rehydrates from this, so server and client agree on the connection
   const cookies = (await headers()).get("cookie");
 
   return (

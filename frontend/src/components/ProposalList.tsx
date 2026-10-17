@@ -7,10 +7,7 @@ import { useWatchProposals } from '@/hooks/useVotingEvents'
 import { ListError } from '@/components/ListError'
 import { WorkflowStatus } from '@/lib/workflow'
 
-/**
- * A proposal's description is written once and never changes, so it is worth
- * remembering: without this, every new proposal re-read all the previous ones.
- */
+/** A description is written once and never changes, so it is cacheable. */
 const descriptions = new Map<string, string>()
 
 export function ProposalList({
@@ -31,8 +28,7 @@ export function ProposalList({
     queryKey: ['proposals', chainId, votingAddress, address],
     enabled: Boolean(client && votingAddress && address),
     queryFn: async () => {
-      // `enabled` above already guarantees these; asserting it here is what
-      // lets the rest of the function read without non-null assertions
+      // guaranteed by `enabled` above; asserted so the rest reads cleanly
       if (!client || !votingAddress || !address) throw new Error('Not ready')
 
       // the event only carries the id, so the whole history gives us the ids
@@ -71,7 +67,6 @@ export function ProposalList({
   if (isPending) return null
   if (error) return <ListError what="proposals" error={error} />
 
-  // one vote per voter, only while the session is open
   const canVote = status === WorkflowStatus.VotingSessionStarted && !hasVoted
 
   return (

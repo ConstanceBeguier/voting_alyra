@@ -11,9 +11,8 @@ export function Voter({ status }: { status: number | undefined }) {
   const chainId = useChainId()
   const votingAddress = getVotingAddress(chainId)
 
-  // getVoter is onlyVoters, so it reverts for anyone else — which is exactly
-  // how we tell. `account` makes the call run as the connected address;
-  // without it msg.sender would be the zero address and it would always fail.
+  // getVoter is onlyVoters: the revert is how we tell. `account` is required,
+  // or msg.sender is the zero address and it fails for everyone.
   const { data: voter } = useReadContract({
     address: votingAddress,
     abi: votingAbi,
@@ -22,9 +21,7 @@ export function Voter({ status }: { status: number | undefined }) {
     account: address,
     query: {
       enabled: Boolean(address && votingAddress),
-      // a revert is the answer here, not an incident: retrying it would just
-      // mean four failing calls for every non-voter. A transient network
-      // failure still deserves another go.
+      // a revert is the answer, not an incident — but a network failure is
       retry: (failureCount, error) => !revertedError(error) && failureCount < 3,
     },
   })

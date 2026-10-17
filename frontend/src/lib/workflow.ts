@@ -1,8 +1,6 @@
 /**
- * The contract's WorkflowStatus enum, in one place.
- *
- * The ABI types it as a plain `number`, so TypeScript cannot check this
- * against Voting.sol: keep the order identical to the enum there.
+ * The contract's WorkflowStatus enum. The ABI types it as a plain `number`, so
+ * nothing checks this against Voting.sol: keep the order identical.
  */
 export const WorkflowStatus = {
   RegisteringVoters: 0,

@@ -10,8 +10,7 @@ import { Voter } from '@/components/Voter'
 import { Winner } from '@/components/Winner'
 
 export default function Home() {
-  // useChainId, not useAccount: it resolves to the configured chain even
-  // without a wallet, so the public parts stay readable for a visitor
+  // useChainId, not useAccount: resolves even without a wallet
   const chainId = useChainId();
   const votingAddress = getVotingAddress(chainId);
 
