@@ -31,9 +31,13 @@ export function ProposalList({
     queryKey: ['proposals', chainId, votingAddress, address],
     enabled: Boolean(client && votingAddress && address),
     queryFn: async () => {
+      // `enabled` above already guarantees these; asserting it here is what
+      // lets the rest of the function read without non-null assertions
+      if (!client || !votingAddress || !address) throw new Error('Not ready')
+
       // the event only carries the id, so the whole history gives us the ids
-      const logs = await client!.getContractEvents({
-        address: votingAddress!,
+      const logs = await client.getContractEvents({
+        address: votingAddress,
         abi: votingAbi,
         eventName: 'ProposalRegistered',
         fromBlock: 0n,
@@ -47,8 +51,8 @@ export function ProposalList({
           let description = descriptions.get(key)
 
           if (description === undefined) {
-            const proposal = await client!.readContract({
-              address: votingAddress!,
+            const proposal = await client.readContract({
+              address: votingAddress,
               abi: votingAbi,
               functionName: 'getOneProposal',
               args: [id],

@@ -16,9 +16,13 @@ export function VoterList() {
     queryKey: ['voters', chainId, votingAddress],
     enabled: Boolean(client && votingAddress),
     queryFn: async () => {
+      // `enabled` above already guarantees these; asserting it here is what
+      // lets the rest of the function read without non-null assertions
+      if (!client || !votingAddress) throw new Error('Not ready')
+
       // the event carries the address itself, so the logs are the whole story
-      const logs = await client!.getContractEvents({
-        address: votingAddress!,
+      const logs = await client.getContractEvents({
+        address: votingAddress,
         abi: votingAbi,
         eventName: 'VoterRegistered',
         fromBlock: 0n,

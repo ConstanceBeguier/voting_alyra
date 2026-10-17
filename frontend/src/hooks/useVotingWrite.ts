@@ -81,6 +81,10 @@ export function useVotingWrite() {
     } as const
 
     try {
+      // `as never`: viem resolves its parameter type from a *literal*
+      // functionName, and ours is the generic F. The object is correct — the
+      // call sites are checked against the ABI by `write`'s own signature —
+      // but the compiler cannot see it through the generic.
       await client.simulateContract({ ...params, account: address } as never)
     } catch (error) {
       setSimulationError(error as Error)
@@ -88,7 +92,7 @@ export function useVotingWrite() {
     }
     // only now is the message about a transaction that is actually being sent
     setSuccess(successMessage)
-    writeContract(params as never)
+    writeContract(params as never) // same reason as the cast above
     return true
   }
 
