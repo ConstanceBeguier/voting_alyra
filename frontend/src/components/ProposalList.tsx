@@ -18,8 +18,8 @@ import { Check, Lightbulb, Loader2, Vote } from 'lucide-react'
 
 /**
  * A description is written once and never changes, so it is cacheable. Keyed by
- * the registering transaction, not the contract address: a local redeploy
- * reuses the same deterministic address with different proposals.
+ * the registering log, not the contract address: a local redeploy reuses the
+ * same deterministic address with different proposals.
  */
 const descriptions = new Map<string, string>()
 
@@ -58,7 +58,7 @@ export function ProposalList({
       return Promise.all(
         logs.map(async (log) => {
           const id = log.args.proposalId!
-          const key = log.transactionHash
+          const key = `${log.transactionHash}-${log.logIndex}`
           let description = descriptions.get(key)
 
           if (description === undefined) {
