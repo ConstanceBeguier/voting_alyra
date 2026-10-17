@@ -29,6 +29,8 @@ export function useVotingWrite() {
   const queryClient = useQueryClient()
   const [simulationError, setSimulationError] = useState<Error | null>(null)
   const [success, setSuccess] = useState<string>()
+  // covers the simulation, before wagmi's own isPending kicks in
+  const [submitting, setSubmitting] = useState(false)
 
   const {
     data: hash,
@@ -72,27 +74,31 @@ export function useVotingWrite() {
       args,
     } as const
 
+    setSubmitting(true)
     try {
       // `as never`: viem needs a literal functionName, ours is generic. Call
       // sites stay checked by write's own signature.
       await client.simulateContract({ ...params, account: address } as never)
     } catch (error) {
       setSimulationError(error as Error)
+      setSubmitting(false)
       return false
     }
     setSuccess(successMessage)
     try {
       await writeContractAsync(params as never) // same reason as the cast above
+      return true
     } catch {
       // already exposed as writeError, e.g. the user rejected it in the wallet
       return false
+    } finally {
+      setSubmitting(false)
     }
-    return true
   }
 
   return {
     votingAddress,
-    busy: isPending || isConfirming,
+    busy: submitting || isPending || isConfirming,
     write,
     tx: {
       isPending,
