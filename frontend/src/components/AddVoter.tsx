@@ -25,7 +25,6 @@ export function AddVoter({ status }: { status: number | undefined }) {
         onSubmit={async (event) => {
           event.preventDefault()
           if (!valid) return
-          // keep what was typed if the transaction was not sent
           if (await write('addVoter', [value], `The voter ${value} is registered.`)) setValue('')
         }}
       >

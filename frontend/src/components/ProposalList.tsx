@@ -12,7 +12,7 @@ import { useVotingWrite } from '@/hooks/useVotingWrite'
 import { ListError } from '@/components/ListError'
 import { TransactionAlert } from '@/components/TransactionAlert'
 import { Button } from '@/components/ui/button'
-import { WorkflowStatus } from '@/lib/workflow'
+import { BLANK_VOTE_ID, WorkflowStatus } from '@/lib/workflow'
 import { cn } from 'cn'
 import { Check, Lightbulb, Loader2, Vote } from 'lucide-react'
 
@@ -100,15 +100,14 @@ export function ProposalList({
           {proposals.map((proposal, index) => {
             const mine = votedProposalId === proposal.id
             const chosen = choice === proposal.id
-            // the contract always registers the blank vote first
-            const blank = proposal.id === 0n
+            const blank = proposal.id === BLANK_VOTE_ID
 
             return (
               <li
                 key={String(proposal.id)}
                 style={{ animationDelay: `${index * 60}ms` }}
                 className={cn(
-                  'group flex flex-wrap items-center gap-3 rounded-xl border p-4 transition-all duration-300 motion-safe:animate-rise',
+                  'flex flex-wrap items-center gap-3 rounded-xl border p-4 transition-all duration-300 motion-safe:animate-rise',
                   mine
                     ? 'border-voter/60 bg-voter/10 shadow-[0_0_40px_-12px_var(--voter)]'
                     : 'border-white/8 bg-white/[0.02] hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.05]',

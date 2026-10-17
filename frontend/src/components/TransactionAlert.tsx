@@ -39,7 +39,6 @@ export function TransactionAlert({ tx }: { tx: TxState }) {
   if (tx.isPending || tx.isConfirming) {
     return (
       <Alert className="relative overflow-hidden border-brand/25 bg-brand/[0.06] motion-safe:animate-rise">
-        {/* a light sweep while we wait on the wallet or the chain */}
         <div className="pointer-events-none absolute inset-0 bg-linear-to-r from-transparent via-white/[0.06] to-transparent motion-safe:animate-shimmer" />
         <Loader2 className="animate-spin text-brand" />
         <AlertTitle>{tx.isPending ? 'Waiting for your signature' : 'Writing it on-chain…'}</AlertTitle>

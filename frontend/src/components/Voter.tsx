@@ -1,7 +1,7 @@
 'use client'
 import { useAccount, useChainId, useReadContract } from 'wagmi'
 import { votingAbi, getVotingAddress } from '@/contracts/voting'
-import { revertedError } from '@/lib/revert'
+import { retryUnlessReverted } from '@/lib/revert'
 import { AddProposal } from '@/components/AddProposal'
 import { ProposalList } from '@/components/ProposalList'
 import { RolePanel } from '@/components/RolePanel'
@@ -23,8 +23,7 @@ export function Voter({ status }: { status: number | undefined }) {
     account: address,
     query: {
       enabled: Boolean(address && votingAddress),
-      // a revert is the answer, not an incident — but a network failure is
-      retry: (failureCount, error) => !revertedError(error) && failureCount < 3,
+      retry: retryUnlessReverted,
     },
   })
 

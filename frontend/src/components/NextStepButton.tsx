@@ -4,6 +4,7 @@ import { TransactionAlert } from '@/components/TransactionAlert'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, CircleCheck, Loader2, Trophy } from 'lucide-react'
 
+// indexed by the current status: the transition out of it
 const NEXT_STEP = [
   {
     fn: 'startProposalsRegistering',
@@ -63,11 +64,7 @@ export function NextStepButton({ status }: { status: number | undefined }) {
       <div className="mt-2 flex flex-wrap items-center justify-between gap-4">
         <p className="max-w-sm text-sm text-muted-foreground">{step.hint}</p>
         <Button size="lg" variant="brand" className="h-11 px-5" disabled={busy} onClick={() => write(step.fn, [], step.done)}>
-          {busy ? (
-            <Loader2 className="animate-spin" />
-          ) : isFinal ? (
-            <Trophy />
-          ) : null}
+          {busy ? <Loader2 className="animate-spin" /> : isFinal && <Trophy />}
           {busy ? 'Confirming…' : step.label}
           {!busy && !isFinal && <ArrowRight className="transition-transform group-hover/button:translate-x-0.5" />}
         </Button>

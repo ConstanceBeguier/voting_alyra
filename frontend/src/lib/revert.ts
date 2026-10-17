@@ -7,3 +7,8 @@ export function revertedError(error: Error) {
   const reverted = error.walk((e) => e instanceof ContractFunctionRevertedError)
   return reverted instanceof ContractFunctionRevertedError ? reverted : undefined
 }
+
+/** A revert is an answer, not an incident: only retry network failures. */
+export function retryUnlessReverted(failureCount: number, error: Error) {
+  return !revertedError(error) && failureCount < 3
+}

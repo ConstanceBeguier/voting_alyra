@@ -10,6 +10,7 @@ import { useWatchVoters } from '@/hooks/useVotingEvents'
 import { ListError } from '@/components/ListError'
 import { UserPlus } from 'lucide-react'
 import { Avatar } from '@/components/Avatar'
+import { shortAddress } from '@/lib/address'
 
 export function VoterList() {
   const chainId = useChainId()
@@ -55,9 +56,7 @@ export function VoterList() {
               className="flex items-center gap-3 rounded-xl border border-white/8 bg-white/[0.02] px-3.5 py-2.5 transition-colors hover:border-white/15 hover:bg-white/[0.05] motion-safe:animate-rise"
             >
               <Avatar address={voter} />
-              <span className="truncate font-mono text-sm">
-                {voter.slice(0, 6)}…{voter.slice(-4)}
-              </span>
+              <span className="truncate font-mono text-sm">{shortAddress(voter)}</span>
             </li>
           ))}
         </ul>

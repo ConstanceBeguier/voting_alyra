@@ -3,9 +3,9 @@ import { useEffect } from 'react'
 import { useAccount, useChainId, useReadContract } from 'wagmi'
 import { Trophy } from 'lucide-react'
 import { votingAbi, getVotingAddress } from '@/contracts/voting'
-import { WorkflowStatus } from '@/lib/workflow'
+import { BLANK_VOTE_ID, WorkflowStatus } from '@/lib/workflow'
 import { celebrateBig } from '@/lib/celebrate'
-import { revertedError } from '@/lib/revert'
+import { retryUnlessReverted } from '@/lib/revert'
 
 export function Winner({ status }: { status: number | undefined }) {
   const { address } = useAccount()
@@ -21,19 +21,18 @@ export function Winner({ status }: { status: number | undefined }) {
   })
 
   const revealed = tallied && winningId !== undefined
-  // the contract always registers the blank vote first
-  const blank = winningId === 0n
+  const blank = winningId === BLANK_VOTE_ID
 
   // getOneProposal is onlyVoters: anyone else just sees the id
   const { data: winner } = useReadContract({
     address: votingAddress,
     abi: votingAbi,
     functionName: 'getOneProposal',
-    args: [winningId ?? 0n],
+    args: [winningId ?? BLANK_VOTE_ID],
     account: address,
     query: {
       enabled: revealed && !blank && Boolean(address),
-      retry: (failureCount, error) => !revertedError(error) && failureCount < 3,
+      retry: retryUnlessReverted,
     },
   })
 

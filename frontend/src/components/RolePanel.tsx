@@ -33,19 +33,19 @@ export function RolePanel({
   subtitle?: ReactNode
   children: ReactNode
 }) {
-  const a = ACCENTS[accent]
+  const colors = ACCENTS[accent]
 
   return (
-    <section className={cn('glass relative overflow-hidden rounded-2xl p-6 motion-safe:animate-rise sm:p-8', a.glow)}>
-      <div className={cn('absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent', a.line)} />
+    <section className={cn('glass relative overflow-hidden rounded-2xl p-6 motion-safe:animate-rise sm:p-8', colors.glow)}>
+      <div className={cn('absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent', colors.line)} />
 
       <div className="flex flex-wrap items-center gap-3">
-        <span className={cn('flex size-11 items-center justify-center rounded-xl ring-1', a.icon)}>{icon}</span>
+        <span className={cn('flex size-11 items-center justify-center rounded-xl ring-1', colors.icon)}>{icon}</span>
         <div className="mr-auto">
           <h2 className="text-xl font-semibold tracking-tight">{title}</h2>
           {subtitle && <p className="text-sm text-muted-foreground">{subtitle}</p>}
         </div>
-        <span className={cn('rounded-full border px-3 py-1 text-xs font-medium', a.chip)}>{badge}</span>
+        <span className={cn('rounded-full border px-3 py-1 text-xs font-medium', colors.chip)}>{badge}</span>
       </div>
 
       <div className="mt-6 flex flex-col gap-6">{children}</div>

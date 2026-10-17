@@ -9,6 +9,8 @@ export function PhaseStepper({ status }: { status: number | undefined }) {
   if (status === undefined) return null
 
   const last = WORKFLOW_LABELS.length - 1
+  // the last phase is an outcome, not something in progress
+  const finished = status === last
 
   return (
     <section className="glass rounded-2xl p-6 sm:p-8">
@@ -20,7 +22,7 @@ export function PhaseStepper({ status }: { status: number | undefined }) {
           </p>
         </div>
         <p className="shrink-0 text-sm text-muted-foreground tabular-nums">
-          Step {status + 1} / {last + 1}
+          Step {status + 1} / {WORKFLOW_LABELS.length}
         </p>
       </div>
 
@@ -36,8 +38,6 @@ export function PhaseStepper({ status }: { status: number | undefined }) {
         <ol className="relative grid grid-cols-6">
           {WORKFLOW_SHORT_LABELS.map((label, step) => {
             const Icon = ICONS[step]
-            // the last phase is an outcome, not something in progress
-            const finished = status === last
             const done = step < status || finished
             const current = step === status && !finished
 
@@ -57,7 +57,7 @@ export function PhaseStepper({ status }: { status: number | undefined }) {
                 <span
                   className={cn(
                     'hidden text-xs sm:block',
-                    current || (finished && step === last) ? 'font-medium text-foreground' : 'text-muted-foreground',
+                    step === status ? 'font-medium text-foreground' : 'text-muted-foreground',
                   )}
                 >
                   {label}
