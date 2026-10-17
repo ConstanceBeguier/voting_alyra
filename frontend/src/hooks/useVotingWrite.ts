@@ -32,7 +32,7 @@ export function useVotingWrite() {
 
   const {
     data: hash,
-    writeContract,
+    writeContractAsync,
     isPending,
     error: writeError,
     reset,
@@ -51,7 +51,7 @@ export function useVotingWrite() {
 
   /**
    * Simulates first: sending straight away loses the revert reason behind an
-   * unrelated gas error. Returns whether the transaction reached the wallet.
+   * unrelated gas error. Returns whether the transaction was signed and sent.
    */
   async function write<F extends VotingFunction>(
     functionName: F,
@@ -81,7 +81,12 @@ export function useVotingWrite() {
       return false
     }
     setSuccess(successMessage)
-    writeContract(params as never) // same reason as the cast above
+    try {
+      await writeContractAsync(params as never) // same reason as the cast above
+    } catch {
+      // already exposed as writeError, e.g. the user rejected it in the wallet
+      return false
+    }
     return true
   }
 

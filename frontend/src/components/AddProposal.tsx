@@ -24,7 +24,7 @@ export function AddProposal({ status }: { status: number | undefined }) {
         onSubmit={async (event) => {
           event.preventDefault()
           if (!valid) return
-          // keep what was typed if the simulation rejected it
+          // keep what was typed if the transaction was not sent
           if (await write('addProposal', [description.trim()], `Your proposal "${description.trim()}" has been added.`)) setDescription('')
         }}
       >
