@@ -1,10 +1,10 @@
 'use client'
 import { useQuery } from '@tanstack/react-query'
-import { useAccount, usePublicClient } from 'wagmi'
+import { useChainId, usePublicClient } from 'wagmi'
 import { votingAbi, getVotingAddress } from '@/contracts/voting'
 
 export function VoterList() {
-  const { chainId } = useAccount()
+  const chainId = useChainId()
   const votingAddress = getVotingAddress(chainId)
   const client = usePublicClient()
 

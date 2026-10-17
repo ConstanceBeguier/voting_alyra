@@ -1,6 +1,6 @@
 'use client'
 import { useQuery } from '@tanstack/react-query'
-import { useAccount, usePublicClient } from 'wagmi'
+import { useAccount, useChainId, usePublicClient } from 'wagmi'
 import { votingAbi, getVotingAddress } from '@/contracts/voting'
 import { VoteButton } from '@/components/VoteButton'
 
@@ -13,7 +13,8 @@ export function ProposalList({
   status: number | undefined
   hasVoted: boolean
 }) {
-  const { address, chainId } = useAccount()
+  const { address } = useAccount()
+  const chainId = useChainId()
   const votingAddress = getVotingAddress(chainId)
   const client = usePublicClient()
 

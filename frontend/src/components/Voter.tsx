@@ -1,12 +1,13 @@
 'use client'
-import { useAccount, useReadContract } from 'wagmi'
+import { useAccount, useChainId, useReadContract } from 'wagmi'
 import { votingAbi, getVotingAddress } from '@/contracts/voting'
 import { AddProposal } from '@/components/AddProposal'
 import { ProposalList } from '@/components/ProposalList'
 
 /** Everything only a registered voter may see. Renders nothing for anyone else. */
 export function Voter({ status }: { status: number | undefined }) {
-  const { address, chainId } = useAccount()
+  const { address } = useAccount()
+  const chainId = useChainId()
   const votingAddress = getVotingAddress(chainId)
 
   // getVoter is onlyVoters, so it reverts for anyone else — which is exactly

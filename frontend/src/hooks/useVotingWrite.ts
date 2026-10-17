@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import {
   useAccount,
+  useChainId,
   usePublicClient,
   useWaitForTransactionReceipt,
   useWriteContract,
@@ -24,7 +25,8 @@ type VotingArgs<F extends VotingFunction> = ContractFunctionArgs<
  * never refresh on their own — and the transaction state the alert needs.
  */
 export function useVotingWrite() {
-  const { address, chainId } = useAccount()
+  const { address } = useAccount()
+  const chainId = useChainId()
   const votingAddress = getVotingAddress(chainId)
   const client = usePublicClient()
   const queryClient = useQueryClient()
