@@ -23,9 +23,6 @@ export const WORKFLOW_LABELS = [
   'Votes tallied',
 ] as const
 
-/** The contract registers the blank vote first, as proposals open. */
-export const BLANK_VOTE_ID = 0n
-
 /** One word per phase, for the stepper. Same order. */
 export const WORKFLOW_SHORT_LABELS = [
   'Registration',
@@ -35,3 +32,6 @@ export const WORKFLOW_SHORT_LABELS = [
   'Counting',
   'Results',
 ] as const
+
+/** The contract registers the blank vote first, as proposals open. */
+export const BLANK_VOTE_ID = 0n

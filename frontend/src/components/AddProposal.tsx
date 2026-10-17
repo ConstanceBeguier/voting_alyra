@@ -14,7 +14,8 @@ export function AddProposal({ status }: { status: number | undefined }) {
   if (status !== WorkflowStatus.ProposalsRegistrationStarted || !votingAddress) return null
 
   // stricter than the contract, which accepts a whitespace-only description
-  const valid = description.trim().length > 0
+  const trimmed = description.trim()
+  const valid = trimmed.length > 0
 
   return (
     <div className="flex w-full flex-col gap-2">
@@ -24,7 +25,7 @@ export function AddProposal({ status }: { status: number | undefined }) {
         onSubmit={async (event) => {
           event.preventDefault()
           if (!valid) return
-          if (await write('addProposal', [description.trim()], `Your proposal "${description.trim()}" has been added.`)) setDescription('')
+          if (await write('addProposal', [trimmed], `Your proposal "${trimmed}" has been added.`)) setDescription('')
         }}
       >
         <Input
