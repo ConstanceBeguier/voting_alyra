@@ -105,3 +105,6 @@ export function useVotingWrite() {
     },
   }
 }
+
+/** What <TransactionAlert /> needs; derived so it cannot drift from the hook. */
+export type TxState = ReturnType<typeof useVotingWrite>['tx']

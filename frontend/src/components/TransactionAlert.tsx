@@ -1,16 +1,9 @@
 'use client'
 import { BaseError } from 'viem'
 import { revertedError } from '@/lib/revert'
+import type { TxState } from '@/hooks/useVotingWrite'
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
 import { CircleAlert, CircleCheck, Loader2 } from 'lucide-react'
-
-export type TxState = {
-  isPending: boolean
-  isConfirming: boolean
-  isSuccess: boolean
-  error: Error | null
-  success?: string
-}
 
 // the contract's custom errors, in plain words
 const REASONS: Record<string, string> = {
