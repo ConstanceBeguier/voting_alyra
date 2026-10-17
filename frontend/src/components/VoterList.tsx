@@ -2,11 +2,14 @@
 import { useQuery } from '@tanstack/react-query'
 import { useChainId, usePublicClient } from 'wagmi'
 import { votingAbi, getVotingAddress } from '@/contracts/voting'
+import { useWatchVoters } from '@/hooks/useVotingEvents'
 
 export function VoterList() {
   const chainId = useChainId()
   const votingAddress = getVotingAddress(chainId)
   const client = usePublicClient()
+
+  useWatchVoters(votingAddress)
 
   const { data: voters, isPending } = useQuery({
     queryKey: ['voters', chainId, votingAddress],

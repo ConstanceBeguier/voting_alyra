@@ -2,7 +2,7 @@
 import { useCallback } from 'react'
 import { useChainId, useReadContract } from 'wagmi'
 import { votingAbi, getVotingAddress } from '@/contracts/voting'
-import { useVotingEvents } from '@/hooks/useVotingEvents'
+import { useWatchWorkflowStatus } from '@/hooks/useVotingEvents'
 import { ConnectPrompt } from '@/components/ConnectPrompt'
 import { WorkflowStatus } from '@/components/WorkflowStatus'
 import { Owner } from '@/components/Owner'
@@ -25,8 +25,8 @@ export default function Home() {
     refetchStatus();
   }, [refetchStatus]);
 
-  // every on-chain change the screen depends on, whoever triggered it
-  useVotingEvents(votingAddress, onStatusChanged);
+  // the phase is public, so this one runs for every visitor
+  useWatchWorkflowStatus(votingAddress, onStatusChanged);
 
   return (
     <div className="flex flex-col items-start gap-3">
