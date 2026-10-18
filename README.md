@@ -12,7 +12,7 @@ The process follows a sequential 6-state workflow (`RegisteringVoters`,
 | | |
 | --- | --- |
 | Frontend | <https://voting-alyra.vercel.app/> |
-| Contract | [`0xED9227aEf82acb2Fee521C7C1F23D797fb208e5A`](https://sepolia.etherscan.io/address/0xED9227aEf82acb2Fee521C7C1F23D797fb208e5A#code) on Sepolia |
+| Contract | [`0x7Bb5B64cb5F98C8d6ac40EF6251383a4ce9D57bf`](https://sepolia.etherscan.io/address/0x7Bb5B64cb5F98C8d6ac40EF6251383a4ce9D57bf#code) on Sepolia |
 
 Connect a wallet on the Sepolia network to take part. Only the contract owner can register
 voters and move the workflow forward, and only registered voters can propose and vote.
